@@ -27,7 +27,7 @@ namespace ArbolAVL
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (Buscar(valor.Nombre.ToLower()) > 0)
+            if (Buscar(valor.Nombre.ToLower()).Edad > 0)
             {
                 return;
             }
@@ -358,7 +358,7 @@ namespace ArbolAVL
             contador = 0;
         }
         //Verifica el estado del índice, por lo que guarda los valores dentro de una lista tipo FARMACO
-        public void Preorden(Nodo<Farmaco> raiz, ref ListaDoble<Farmaco> ListaInventario)
+        public void Preorden(NodoAVL<PacienteArbol> raiz, ref ListaDobleEnlace.ListaDoble<PacienteArbol> ListaInventario)
         {
             //ListaInventario = new ListaDoble<Farmaco>();
             if (raiz != null)
@@ -369,7 +369,7 @@ namespace ArbolAVL
             }
         }
 
-        public void InOrden(Nodo<Farmaco> raiz, ref ListaDoble<Farmaco> ListaInventario)
+        public void InOrden(NodoAVL<PacienteArbol> raiz, ref ListaDobleEnlace.ListaDoble<PacienteArbol> ListaInventario)
         {
             if (raiz != null)
             {
@@ -379,7 +379,7 @@ namespace ArbolAVL
             }
         }
 
-        public void PostOrden(Nodo<Farmaco> raiz, ref ListaDoble<Farmaco> ListaInventario)
+        public void PostOrden(NodoAVL<PacienteArbol> raiz, ref ListaDobleEnlace.ListaDoble<PacienteArbol> ListaInventario)
         {
             if (raiz != null)
             {

@@ -7,9 +7,9 @@ namespace Proyecto_Estructuras.Models
 {
     public class Usuarios
     {
-        string User { get; set; }
-        string Password { get; set; }
-        string Centro { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string Centro { get; set; }
         
     }
 }

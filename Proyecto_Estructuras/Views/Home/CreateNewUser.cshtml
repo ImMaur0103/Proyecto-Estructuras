@@ -1,0 +1,62 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Centro general Vacunacion Covid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CreateNewUser">Create new User</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="bodycontainer">
+    <div class="NewUserContainer">
+        <div class="ColumnasUser">
+            <h4>Crear Nuevo Usuario</h4>
+        </div>
+        <div class="ColumnasUser">
+            <form asp-controller="Home" asp-action="CrearNewUser" method="post">
+                <div>
+                    <label>Usuario:</label>
+                    <input type="text" name="User" placeholder="Usuario">
+                </div>
+                <div>
+                    <label>Contraseña:</label>
+                    <input type="password" name="Password" placeholder="Contraseña">
+                </div>
+                <div>
+                    <label>Centro:</label>
+                    <input type="text" name="Center" placeholder="Centro">
+                </div>
+                <div>
+                    <label>Usuario Administrador:</label>
+                    <input type="password" name="AdminU" placeholder="Administrador">
+                </div>
+                <div>
+                    <label>Contraseña Administrador:</label>
+                    <input type="password" name="AdminP" placeholder="Contraseña">
+                </div>
+                <div>
+                    <input type="submit" value="Create">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--Falta codigo para enviar texto en caso de que ingrese mal la contraseñ o el usuario administrador*/-->
