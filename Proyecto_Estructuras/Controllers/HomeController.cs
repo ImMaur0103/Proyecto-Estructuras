@@ -11,6 +11,10 @@ namespace Proyecto_Estructuras.Controllers
 {
     public class HomeController : Controller
     {
+        const string RutaUsuario = "\\files\\Users\\Users.csv";
+        const string RutaCentros = "\\files\\InformacionCentro\\";
+        const string RutaPacientes = "\\files\\InformacionPacientes\\Pacientes.csv";
+
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)

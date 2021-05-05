@@ -5,9 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ArbolAVL\ArbolAVL.csproj" />
     <ProjectReference Include="..\ListaDobleEnlace\ListaDobleEnlace.csproj" />
     <ProjectReference Include="..\THash\THash.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\files\InformacionCentro\" />
+    <Folder Include="wwwroot\files\InformacionPacientes\" />
+    <Folder Include="wwwroot\files\Users\" />
   </ItemGroup>
 
 </Project>

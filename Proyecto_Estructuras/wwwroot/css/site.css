@@ -69,3 +69,70 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+/*----------------------------------------------------
+  CSS para Login*/
+
+
+.loginbox {
+    width: 350px;
+    height: 300px;
+    background: #000000;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+}
+
+    .loginbox input {
+        font-family: 'Yu Gothic';
+        margin-bottom: 20px
+    }
+
+        .loginbox input[type="text"], input[type="password"] {
+            border: none;
+            width: 65%;
+            border-bottom: 0.5px solid #fff;
+            background: transparent;
+            outline: none;
+            height: 20px;
+            margin-bottom: 40px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .loginbox input[type="submit"] {
+            width: 100%;
+            border: thin;
+            outline: none;
+            height: 40px;
+            background: #f00;
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+            .loginbox input[type="submit"]:hover {
+                cursor: pointer;
+                background: #f5ff00;
+                color: #000;
+            }
+
+    .loginbox label {
+        border: none;
+        width: 30%;
+        outline: none;
+        height: 14px;
+    }
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    border-radius: 50%;
+    position: absolute;
+    top: -50px;
+    left: -50px;
+}
+
