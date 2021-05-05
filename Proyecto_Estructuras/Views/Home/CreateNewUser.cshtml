@@ -29,7 +29,7 @@
             <h4>Crear Nuevo Usuario</h4>
         </div>
         <div class="ColumnasUser">
-            <form asp-controller="Home" asp-action="CrearNewUser" method="post">
+            <form asp-controller="Home" asp-action="CreateNewUser" method="post">
                 <div>
                     <label>Usuario:</label>
                     <input type="text" name="User" placeholder="Usuario">
@@ -40,15 +40,15 @@
                 </div>
                 <div>
                     <label>Centro:</label>
-                    <input type="text" name="Center" placeholder="Centro">
+                    <input type="text" name="Centro" placeholder="Centro">
                 </div>
                 <div>
                     <label>Usuario Administrador:</label>
-                    <input type="password" name="AdminU" placeholder="Administrador">
+                    <input type="password" name="AUser" placeholder="Administrador">
                 </div>
                 <div>
                     <label>Contraseña Administrador:</label>
-                    <input type="password" name="AdminP" placeholder="Contraseña">
+                    <input type="password" name="APassword" placeholder="Contraseña">
                 </div>
                 <div>
                     <input type="submit" value="Create">

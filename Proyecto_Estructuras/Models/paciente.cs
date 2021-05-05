@@ -7,13 +7,12 @@ namespace Proyecto_Estructuras.Models
 {
     public class paciente
     {
-        string Nombre { get; set; }
-        string Apellido { get; set; }
-        int DPI_CUI { get; set; }
-        string Departamento { get; set; }
-        string Municipio_residencia { get; set; }
-        int Edad { get; set; }
-        bool Cuerpo_medico { get; set; }
-        bool Vacunado { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        public int DPI_CUI { get; set; }
+        public string Departamento { get; set; }
+        public string Municipio_residencia { get; set; }
+        public int Edad { get; set; }
+        public bool Vacunado { get; set; }
     }
 }
