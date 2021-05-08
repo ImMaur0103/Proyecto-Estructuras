@@ -188,19 +188,191 @@ namespace Proyecto_Estructuras.Controllers
                         ListaPacientes.InsertarFinal(Paciente);
                     }
                 }
-                //Aca falta ingresar la lista al csv
-                return View(ListaPacientes);
+                //Agregado Datos del paciente a un paciente nuevo recien creado
+                paciente PacienteAgregar = new paciente();
+                PacienteAgregar.Nombre = Nombre;
+                PacienteAgregar.Apellido = Apellido;
+                PacienteAgregar.DPI_CUI = DPI_CUI;
+                PacienteAgregar.Departamento = Departamento;
+                PacienteAgregar.Municipio_residencia = Municipio_residencia;
+                PacienteAgregar.Edad = Edad;
+                PacienteAgregar.Vacunado = Vacunado;
+
+                //Se adjunta el paciente a la Lista doble
+                ListaPacientes.InsertarFinal(PacienteAgregar);
+
+                //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
+                using (StreamWriter sw = new StreamWriter(FileName))
+                {
+                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado");
+                    for (int i = 0; i < ListaPacientes.contador; i++)
+                    {
+                        sw.WriteLine(JuntarString(ListaPacientes.ObtenerValor(i)));
+                    }
+                }
+
+                return View("Registro",ListaPacientes);
             }
             return View();
         }
+        
+        //Busquedas -------------------------------------------------------------
+        public IActionResult Buscar([FromServices] IHostingEnvironment HostEnvi)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<PacienteArbol>();
+                    Singleton.Instance.ArbolPacientesNombres.InsertarNombres(Paciente);
+                    Singleton.Instance.ArbolPacientesApellidos.InsertarApellidos(Paciente);
+                    Singleton.Instance.ArbolPacientesDPI.InsertarValor(Paciente);
+                }
+            }
+            
+            return View();
+        }
+
+        public IActionResult BuscarNombre(string Nombre, [FromServices] IHostingEnvironment HostEnvi)
+        {
+            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesNombres.Buscar(Nombre);
+            return View("Buscar", Buscado);
+        }
+        public IActionResult BuscarApellido(string Apellido)
+        {
+            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesApellidos.BuscarA(Apellido);
+            return View("Buscar", Buscado);
+        }
+        public IActionResult BuscarDPIoCUI(long DPI_CUI)
+        {
+            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesDPI.BuscarNumero(DPI_CUI);
+            return View("Buscar", Buscado);
+        }
+        //-----------------------------------------------------------------------
+
+
+        [HttpGet]//Edicieones
+        public IActionResult Editar([FromServices] IHostingEnvironment HostEnvi)
+        {
+            ViewBag.variable = false;
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    ListaPacientes.InsertarFinal(Paciente);
+                }
+            }
+            return View(ListaPacientes);
+        }
+        [HttpGet]
+        public IActionResult Editar2(long KeyValue, [FromServices] IHostingEnvironment HostEnvi)
+        {
+            HttpContext.Session.SetString(HttpContext.Session.Id + "KeyValue", Convert.ToString(KeyValue));
+            ViewBag.variable = true;
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    ListaPacientes.InsertarFinal(Paciente);
+                }
+            }
+            return View("Editar", ListaPacientes);
+        }
+        [HttpPost]
+        public RedirectResult Editar2([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, string Departamento, string Municipio_residencia, int Edad, bool Vacunado)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            long DPI = Convert.ToInt64(HttpContext.Session.GetString(HttpContext.Session.Id + "KeyValue"));
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    if (Paciente.DPI_CUI == DPI)
+                    {
+                        Paciente.Nombre = RetornarActualizacion(Paciente.Nombre, Nombre);
+                        Paciente.Apellido = RetornarActualizacion(Paciente.Apellido, Apellido);
+                        Paciente.Departamento = RetornarActualizacion(Paciente.Departamento, Departamento);
+                        Paciente.Municipio_residencia = RetornarActualizacion(Paciente.Municipio_residencia, Municipio_residencia);
+                        if (Edad != 0)
+                            Paciente.Edad = Edad;
+                        if (Paciente.Vacunado != Vacunado)
+                            Paciente.Vacunado = Vacunado;
+                        if (DPI_CUI != 0)
+                            Paciente.DPI_CUI = DPI_CUI;
+                    }
+                    ListaPacientes.InsertarFinal(Paciente);
+                }
+            }
+
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado");
+                for (int i = 0; i < ListaPacientes.contador; i++)
+                {
+                    sw.WriteLine(JuntarString(ListaPacientes.ObtenerValor(i)));
+                }
+            }
+
+            return Redirect("Editar");
+        }
+
+
         public IActionResult Privacy()
         {
             return View();
         }
 
         //-----------------------------Fuenciones y procedimientos complementarios--------------
+        string JuntarString(paciente Paciente)
+        {
+            string Retornar = Paciente.Nombre;
+            Retornar += "," + Paciente.Apellido;
+            Retornar += "," + Convert.ToString(Paciente.DPI_CUI);
+            Retornar += "," + Paciente.Departamento;
+            Retornar += "," + Paciente.Municipio_residencia;
+            Retornar += "," + Convert.ToString(Paciente.Edad);
+            Retornar += "," + Convert.ToString(Paciente.Vacunado);
+            
+            return Retornar;
+        }
 
-
+        string RetornarActualizacion(string Retornar, string Cambiar)
+        {
+            if(Cambiar == null)
+            {
+                return Retornar;
+            }
+            return Cambiar;
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

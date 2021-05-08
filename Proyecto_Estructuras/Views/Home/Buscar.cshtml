@@ -1,0 +1,151 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ArbolAVL.PacienteArbol
+
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="" asp-area="" asp-controller="Home" asp-action="Index">Centro general Vacunacion Covid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registro">Registro</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registrar">Registrar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Buscar">Buscar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Editar">Editar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@using (Html.BeginForm(actionName: "Buscar", controllerName: "Home", FormMethod.Get))
+{
+    <ul id="tabs" class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#tab1" data-toggle="tab">Buscar por Nombre</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#tab2" data-toggle="tab">Buscar por Apellido</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#tab3" data-toggle="tab">Buscar por DPI o CUI</a>
+        </li>
+    </ul>}
+<div id="my-tab-content" class="tab-content">
+    <div id="tab1" class="tab-pane active">
+        <form method="get" action="BuscarNombre" class="Registrar">
+            <div class="form-floating mb-3">
+                <label for="floatingInput">Nombre</label>
+                <input type="text" class="form-control" name="Nombre" placeholder="Nombre">
+            </div>
+            <div>
+                <center><button type="submit" class="Boton">Buscar</button></center>
+            </div>
+        </form>
+    </div>
+    <div id="tab2" class="tab-pane">
+        <form method="get" action="BuscarApellido" class="Registrar">
+            <div class="form-floating">
+                <label for="floatingInput">Apellido</label>
+                <input type="text" class="form-control" name="Apellido" placeholder="Apellido">
+            </div>
+            <div>
+                <center><button type="submit" class="Boton">Buscar</button></center>
+            </div>
+        </form>
+    </div>
+    <div id="tab3" class="tab-pane">
+        <form method="get" action="BuscarDPIoCUI" class="Registrar">
+            <div class="form-floating">
+                <label for="floatingInput">DPI, o en caso de no poseer ingrese CUI</label>
+                <input type="text" class="form-control" name="DPI_CUI" placeholder="DPI/CUI">
+            </div>
+            <div>
+                <center><button type="submit" class="Boton">Buscar</button></center>
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    @if (Model != null)
+    {
+        <table class="table" cellpadding="0" cellspacing="0">
+            <thead class="table-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DPI_CUI)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Apellido)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Municipio_residencia)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Departamento)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Edad)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Vacunado)
+                    </th>
+                </tr>
+            </thead>
+            @if (Model != null)
+            {
+
+                <tbody>
+                    <tr>
+                        <th>
+                            @Html.DisplayFor(model => model.DPI_CUI)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Nombre)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Apellido)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Municipio_residencia)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Departamento)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Edad)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Vacunado)
+                        </th>
+                    </tr>
+                </tbody>
+            }
+        </table>
+    }
+</div>

@@ -21,14 +21,16 @@ namespace ArbolAVL
         ~Arbol() { }
 
         // Insertar nodos en el árbol 
-        public void Insertar(PacienteArbol valor)
+        public void InsertarNombres(PacienteArbol valor)
         {
             NodoAVL<T> NuevoNodo = new NodoAVL<T>();
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (Buscar(valor.Nombre.ToLower()).Edad > 0)
+            if (Buscar(valor.Nombre) != null)
             {
+                raiz = InsertarNodoApellido(raiz, NuevoNodo);
+                contador++;
                 return;
             }
 
@@ -38,18 +40,34 @@ namespace ArbolAVL
             }
             else
             {
-                raiz = InsertarNodo(raiz, NuevoNodo);
+                raiz = InsertarNodoNombre(raiz, NuevoNodo);
             }
             contador++;
         }
-
-        public T Mayor<T>(T valor1, T valor2) where T : IComparable
+        public void InsertarApellidos(PacienteArbol valor)
         {
-            if (valor1.CompareTo(valor2) > 0) return valor1;
-            return valor2;
-        }
+            NodoAVL<T> NuevoNodo = new NodoAVL<T>();
+            NuevoNodo.valor = valor;
+            NuevoNodo.izquierda = null;
+            NuevoNodo.derecha = null;
+            if (Buscar(valor.Nombre) != null)
+            {
+                raiz = InsertarNodoNombre(raiz, NuevoNodo);
+                contador++;
+                return;
+            }
 
-        private NodoAVL<T> InsertarNodo(NodoAVL<T> actual, NodoAVL<T> nuevo)
+            if (raiz == null)
+            {
+                raiz = NuevoNodo;
+            }
+            else
+            {
+                raiz = InsertarNodoApellido(raiz, NuevoNodo);
+            }
+            contador++;
+        }
+        private NodoAVL<T> InsertarNodoNombre(NodoAVL<T> actual, NodoAVL<T> nuevo)
         {
             NodoAVL<T> Raiz = actual;
 
@@ -61,7 +79,7 @@ namespace ArbolAVL
                 }
                 else
                 {
-                    actual.izquierda = InsertarNodo(actual.izquierda, nuevo);
+                    actual.izquierda = InsertarNodoNombre(actual.izquierda, nuevo);
                     if ((ArbolAVL.CalcFe(actual.izquierda) - ArbolAVL.CalcFe(actual.derecha)) == 2)
                     {
                         if (nuevo.valor.Nombre.CompareTo(actual.izquierda.valor.Nombre) < 0)
@@ -83,7 +101,7 @@ namespace ArbolAVL
                 }
                 else
                 {
-                    actual.derecha = InsertarNodo(actual.derecha, nuevo);
+                    actual.derecha = InsertarNodoNombre(actual.derecha, nuevo);
                     if ((ArbolAVL.CalcFe(actual.derecha) - ArbolAVL.CalcFe(actual.izquierda)) == 2)
                     {
                         if (nuevo.valor.Nombre.CompareTo(actual.derecha.valor.Nombre) > 0)
@@ -118,9 +136,207 @@ namespace ArbolAVL
             return Raiz;
         }
 
+        private NodoAVL<T> InsertarNodoApellido(NodoAVL<T> actual, NodoAVL<T> nuevo)
+        {
+            NodoAVL<T> Raiz = actual;
+
+            if (nuevo.valor.Apellido.CompareTo(actual.valor.Apellido) < 0)
+            {
+                if (actual.izquierda == null)
+                {
+                    actual.izquierda = nuevo;
+                }
+                else
+                {
+                    actual.izquierda = InsertarNodoApellido(actual.izquierda, nuevo);
+                    if ((ArbolAVL.CalcFe(actual.izquierda) - ArbolAVL.CalcFe(actual.derecha)) == 2)
+                    {
+                        if (nuevo.valor.Apellido.CompareTo(actual.izquierda.valor.Apellido) < 0)
+                        {
+                            Raiz = ArbolAVL.RotarIzquierda(actual);
+                        }
+                        else
+                        {
+                            Raiz = ArbolAVL.RDobleIzquierda(actual);
+                        }
+                    }
+                }
+            }
+            else if (nuevo.valor.Apellido.CompareTo(actual.valor.Apellido) > 0)
+            {
+                if (actual.derecha == null)
+                {
+                    actual.derecha = nuevo;
+                }
+                else
+                {
+                    actual.derecha = InsertarNodoApellido(actual.derecha, nuevo);
+                    if ((ArbolAVL.CalcFe(actual.derecha) - ArbolAVL.CalcFe(actual.izquierda)) == 2)
+                    {
+                        if (nuevo.valor.Apellido.CompareTo(actual.derecha.valor.Apellido) > 0)
+                        {
+                            Raiz = ArbolAVL.RotarDerecha(actual);
+                        }
+                        else
+                        {
+                            Raiz = ArbolAVL.RDobleDerecha(actual);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            if ((actual.izquierda == null) && (actual.derecha != null))
+            {
+                actual.Fe = actual.derecha.Fe + 1;
+            }
+            else if ((actual.derecha == null) && (actual.izquierda != null))
+            {
+                actual.Fe = actual.izquierda.Fe + 1;
+            }
+            else
+            {
+                actual.Fe = Math.Max(ArbolAVL.CalcFe(actual.izquierda), ArbolAVL.CalcFe(actual.derecha)) + 1;
+            }
+
+            return Raiz;
+        }
+        public void InsertarValor(PacienteArbol valor)
+        {
+            NodoAVL<T> NuevoNodo = new NodoAVL<T>();
+            NuevoNodo.valor = valor;
+            NuevoNodo.izquierda = null;
+            NuevoNodo.derecha = null;
+            if (BuscarNumero(valor.DPI_CUI) != null)
+            {
+                return;
+            }
+
+            if (raiz == null)
+            {
+                raiz = NuevoNodo;
+            }
+            else
+            {
+                raiz = InsertarNodoValor(raiz, NuevoNodo);
+            }
+            contador++;
+        }
+
+        private NodoAVL<T> InsertarNodoValor(NodoAVL<T> actual, NodoAVL<T> nuevo)
+        {
+            NodoAVL<T> Raiz = actual;
+
+            if (nuevo.valor.DPI_CUI < actual.valor.DPI_CUI)
+            {
+                if (actual.izquierda == null)
+                {
+                    actual.izquierda = nuevo;
+                }
+                else
+                {
+                    actual.izquierda = InsertarNodoValor(actual.izquierda, nuevo);
+                    if ((ArbolAVL.CalcFe(actual.izquierda) - ArbolAVL.CalcFe(actual.derecha)) == 2)
+                    {
+                        if (nuevo.valor.Nombre.CompareTo(actual.izquierda.valor.Nombre) < 0)
+                        {
+                            Raiz = ArbolAVL.RotarIzquierda(actual);
+                        }
+                        else
+                        {
+                            Raiz = ArbolAVL.RDobleIzquierda(actual);
+                        }
+                    }
+                }
+            }
+            else if (nuevo.valor.DPI_CUI > actual.valor.DPI_CUI)
+            {
+                if (actual.derecha == null)
+                {
+                    actual.derecha = nuevo;
+                }
+                else
+                {
+                    actual.derecha = InsertarNodoValor(actual.derecha, nuevo);
+                    if ((ArbolAVL.CalcFe(actual.derecha) - ArbolAVL.CalcFe(actual.izquierda)) == 2)
+                    {
+                        if (nuevo.valor.Nombre.CompareTo(actual.derecha.valor.Nombre) > 0)
+                        {
+                            Raiz = ArbolAVL.RotarDerecha(actual);
+                        }
+                        else
+                        {
+                            Raiz = ArbolAVL.RDobleDerecha(actual);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            if ((actual.izquierda == null) && (actual.derecha != null))
+            {
+                actual.Fe = actual.derecha.Fe + 1;
+            }
+            else if ((actual.derecha == null) && (actual.izquierda != null))
+            {
+                actual.Fe = actual.izquierda.Fe + 1;
+            }
+            else
+            {
+                actual.Fe = Math.Max(ArbolAVL.CalcFe(actual.izquierda), ArbolAVL.CalcFe(actual.derecha)) + 1;
+            }
+
+            return Raiz;
+        }
+
+
+        public T Mayor<T>(T valor1, T valor2) where T : IComparable
+        {
+            if (valor1.CompareTo(valor2) > 0) return valor1;
+            return valor2;
+        }
+        public PacienteArbol BuscarNumero(long dpi)
+        {
+            NodoAVL<T> recorrer = raiz;
+            bool encontrar = false;
+            while (recorrer != null && encontrar == false)
+            {
+                long valor = recorrer.valor.DPI_CUI;
+                if (dpi == valor)
+                {
+                    encontrar = true;
+                }
+                else
+                {
+                    if (dpi > recorrer.valor.DPI_CUI)
+                    {
+                        recorrer = recorrer.derecha;
+                        encontrar = false;
+                    }
+                    else
+                    {
+                        recorrer = recorrer.izquierda;
+                        encontrar = false;
+                    }
+                }
+            }
+            if (recorrer == null)
+            {
+                return null;
+            }
+            return recorrer.valor;
+        }
+
         public PacienteArbol Buscar(string nombre)
         {
             NodoAVL<T> recorrer = raiz;
+            nombre = nombre.ToLower();
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
             {
@@ -151,6 +367,39 @@ namespace ArbolAVL
             return recorrer.valor;
         }
 
+        public PacienteArbol BuscarA(string nombre)
+        {
+            NodoAVL<T> recorrer = raiz;
+            nombre = nombre.ToLower();
+            bool encontrar = false;
+            while (recorrer != null && encontrar == false)
+            {
+                string valor = recorrer.valor.Apellido;
+                valor = valor.ToLower();
+                if (nombre == valor)
+                {
+                    encontrar = true;
+                }
+                else
+                {
+                    if (nombre.CompareTo(recorrer.valor.Apellido) > 0)
+                    {
+                        recorrer = recorrer.derecha;
+                        encontrar = false;
+                    }
+                    else
+                    {
+                        recorrer = recorrer.izquierda;
+                        encontrar = false;
+                    }
+                }
+            }
+            if (recorrer == null)
+            {
+                return null;
+            }
+            return recorrer.valor;
+        }
         public NodoAVL<T> DeleteNodo(NodoAVL<T> actual, NodoAVL<T> Borrar)
         {
             if (actual == null)

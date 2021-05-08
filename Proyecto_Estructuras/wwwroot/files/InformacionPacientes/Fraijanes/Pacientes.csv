@@ -1,1 +1,5 @@
 Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado
+Mauricio Alejandro,lopez,3994745280113,Guatemala,Fraijanes,21,True
+Andres,Galvez,3016382930101,Guatemala,Zona 18,21,False
+Andrea,Najara,1234567891234,Guatemala,Fraijanes,22,False
+Agnes,McClain,1234567891123,Guatemala,Fraijanes,70,True

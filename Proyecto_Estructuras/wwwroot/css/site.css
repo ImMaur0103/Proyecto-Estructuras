@@ -199,6 +199,14 @@ body {
     padding: 70px 30px;
 }
 
+.Checkbox{
+    width:15px;
+    height:15px;
+    border-radius:1px;
+}
+    .Checkbox :checked {
+        color: #06e91f;
+    }
 .Boton {
     width: 100%;
     border-radius: 8px;

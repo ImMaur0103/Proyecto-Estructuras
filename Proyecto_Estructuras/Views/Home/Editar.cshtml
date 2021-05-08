@@ -1,0 +1,140 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto_Estructuras.Models.paciente>
+@{
+    bool Editar = ViewBag.variable;
+}
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container">
+        <a class="" asp-area="" asp-controller="Home" asp-action="Index">Centro general Vacunacion Covid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registro">Registro</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registrar">Registrar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Buscar">Buscar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Editar">Editar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <table class="table" cellpadding="0" cellspacing="0">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.DPI_CUI)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Apellido)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Municipio_residencia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Departamento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Edad)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Vacunado)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        @if (Model != null)
+        {
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DPI_CUI)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Apellido)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Departamento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Edad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Vacunado)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Editar", "Editar2", "Home", new { KeyValue = item.DPI_CUI }, null)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        }
+    </table>
+    @if (Editar)
+    {
+        <form method="post" action="Editar2" >
+
+            <div class="form-floating mb-3">
+                <label for="floatingInput">Nombre</label>
+                <input type="text" class="form-control" name="Nombre" placeholder="Nombre">
+            </div>
+            <div class="form-floating">
+                <label for="floatingInput">Apellido</label>
+                <input type="text" class="form-control" name="Apellido" placeholder="Apellido">
+            </div>
+            <div class="form-floating">
+                <label for="floatingInput">DPI, o en caso de no poseer ingrese CUI</label>
+                <input type="tel" class="form-control" name="DPI_CUI" placeholder="DPI/CUI">
+            </div>
+            <div class="form-floating mb-3">
+                <label for="floatingInput">Departamento</label>
+                <input type="text" class="form-control" name="Departamento" placeholder="Departamento">
+            </div>
+            <div class="form-floating">
+                <label for="floatingInput">Municipo donde usted recide</label>
+                <input type="text" class="form-control" name="Municipio_residencia" placeholder="Municipio de residencia">
+            </div>
+            <div class="form-floating">
+                <label for="floatingInput">Edad</label>
+                <input type="tel" class="form-control" name="Edad" placeholder="Edad">
+            </div>
+            <div class="form-floating">
+                <label for="floatingInput">Vacunado</label>
+                <input class="Checkbox" data-val="true" data-val-required="The Vacunado field is required." id="Vacunado" name="Vacunado" type="checkbox" value="true">
+            </div>
+            <div>
+                <center><button type="submit" class="Boton">Actualizar</button></center>
+            </div>
+        </form>
+    }
+</div>
