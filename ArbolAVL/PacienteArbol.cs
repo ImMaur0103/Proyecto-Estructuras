@@ -14,5 +14,6 @@ namespace ArbolAVL
         public string Municipio_residencia { get; set; }
         public int Edad { get; set; }
         public bool Vacunado { get; set; }
+        public int Prioridad { get; set; }
     }
 }

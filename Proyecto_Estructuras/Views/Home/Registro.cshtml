@@ -25,13 +25,18 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Editar">Editar</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Espera">Lista de Espera</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Agendar">Agendar Cita</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-
     <table class="table" cellpadding="0" cellspacing="0">
         <thead class="table-dark">
             <tr>
@@ -54,6 +59,9 @@
                     @Html.DisplayNameFor(model => model.Edad)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Prioridad)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Vacunado)
                 </th>
             </tr>
@@ -64,29 +72,32 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DPI_CUI)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Apellido)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Municipio_residencia)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Departamento)
-                        </td>
-                        <th>
-                            @Html.DisplayFor(modelItem => item.Edad)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(modelItem => item.Vacunado)
-                        </th>
-                    </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DPI_CUI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Departamento)
+                    </td>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Edad)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Prioridad)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Vacunado)
+                    </th>
+                </tr>
                 }
             </tbody>
         }

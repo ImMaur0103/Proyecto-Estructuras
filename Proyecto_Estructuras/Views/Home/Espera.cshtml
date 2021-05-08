@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+@model IEnumerable<Proyecto_Estructuras.Models.Citas>
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
@@ -37,41 +38,58 @@
         </div>
     </div>
 </nav>
-<form method="post" action="Registrar" class="Registrar">
 
-    <div class="form-floating mb-3">
-        <label for="floatingInput">Nombre</label>
-        <input type="text" class="form-control" name="Nombre" placeholder="Nombre">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Apellido</label>
-        <input type="text" class="form-control" name="Apellido" placeholder="Apellido">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">DPI, o en caso de no poseer ingrese CUI</label>
-        <input type="tel" class="form-control" name="DPI_CUI" placeholder="DPI/CUI">
-    </div>
-    <div class="form-floating mb-3">
-        <label for="floatingInput">Departamento</label>
-        <input type="text" class="form-control" name="Departamento" placeholder="Departamento">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Municipo donde usted recide</label>
-        <input type="text" class="form-control" name="Municipio_residencia" placeholder="Municipio de residencia">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Edad</label>
-        <input type="tel" class="form-control" name="Edad" placeholder="Edad">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Prioridad</label>
-        <input type="tel" class="form-control" name="Prioridad" placeholder="Prioridad">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Vacunado</label>
-        <input class="Checkbox" data-val="true" data-val-required="The Vacunado field is required." id="Vacunado" name="Vacunado" type="checkbox" value="true">
-    </div>
-    <div>
-        <center><button type="submit" class="Boton">Agregar</button></center>
-    </div>
-</form>
+<table class="table" cellpadding="0" cellspacing="0">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DPI_CUI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Edad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prioridad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fecha)
+            </th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DPI_CUI)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Edad)
+                </th>
+                <th>
+
+                    @Html.DisplayFor(modelItem => item.Prioridad)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.fecha)
+                </td>
+            </tr>
+            }
+        </tbody>
+    }
+</table>

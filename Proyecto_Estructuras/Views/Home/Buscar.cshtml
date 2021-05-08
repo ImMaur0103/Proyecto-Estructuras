@@ -26,13 +26,18 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Editar">Editar</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Espera">Lista de Espera</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Agendar">Agendar Cita</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-
 @using (Html.BeginForm(actionName: "Buscar", controllerName: "Home", FormMethod.Get))
 {
     <ul id="tabs" class="nav nav-tabs">
@@ -113,6 +118,9 @@
                         @Html.DisplayNameFor(model => model.Edad)
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.Prioridad)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.Vacunado)
                     </th>
                 </tr>
@@ -139,6 +147,9 @@
                         </th>
                         <th>
                             @Html.DisplayFor(model => model.Edad)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.Prioridad)
                         </th>
                         <th>
                             @Html.DisplayFor(model => model.Vacunado)
