@@ -1,5 +1,5 @@
 Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad
 Agnes,Castro,1234567891234,Guatemala,Fraijanes,21,True,3
-Mauricio Alejandro,lopez,3994745280113,Guatemala,Santa catarina,21,False,2
+Mauricio Alejandro,lopez,3994745280113,Guatemala,Santa catarina,21,True,2
 Andres,Galvez,3016382930101,Guatemala,Zona 18,21,True,3
 Ines,Peñate,1234567859642,Guatemala,Fraijanes,70,True,1
