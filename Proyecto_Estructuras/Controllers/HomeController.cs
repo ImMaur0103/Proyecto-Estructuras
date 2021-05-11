@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Arbol;
 using ArbolAVL;
 using ListaDobleEnlace;
 using THash;
@@ -266,7 +267,7 @@ namespace Proyecto_Estructuras.Controllers
                 CSV.ReadHeader();
                 while (CSV.Read())
                 {
-                    var Paciente = CSV.GetRecord<PacienteArbol>();
+                    var Paciente = CSV.GetRecord<ArbolAVL.PacienteArbol>();
                     Singleton.Instance.ArbolPacientesNombres.InsertarNombres(Paciente);
                     Singleton.Instance.ArbolPacientesApellidos.InsertarApellidos(Paciente);
                     Singleton.Instance.ArbolPacientesDPI.InsertarValor(Paciente);
@@ -278,17 +279,17 @@ namespace Proyecto_Estructuras.Controllers
 
         public IActionResult BuscarNombre(string Nombre, [FromServices] IHostingEnvironment HostEnvi)
         {
-            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesNombres.Buscar(Nombre);
+            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesNombres.Buscar(Nombre);
             return View("Buscar", Buscado);
         }
         public IActionResult BuscarApellido(string Apellido)
         {
-            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesApellidos.BuscarA(Apellido);
+            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesApellidos.BuscarA(Apellido);
             return View("Buscar", Buscado);
         }
         public IActionResult BuscarDPIoCUI(long DPI_CUI)
         {
-            PacienteArbol Buscado = Singleton.Instance.ArbolPacientesDPI.BuscarNumero(DPI_CUI);
+            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesDPI.BuscarNumero(DPI_CUI);
             return View("Buscar", Buscado);
         }
         //-----------------------------------------------------------------------

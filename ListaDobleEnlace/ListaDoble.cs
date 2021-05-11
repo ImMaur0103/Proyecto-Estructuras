@@ -60,6 +60,30 @@ namespace ListaDobleEnlace
             return;
         }
 
+        public void InsertarEnPosicion(T NuevoValor, int Posicion)
+        {
+            Nodo<T> temporal = inicio;
+            Nodo<T> NodoAdd = new Nodo<T>();
+            NodoAdd.Valor = NuevoValor;
+
+            if (!ListaVacia())
+            {
+                Nodo<T> auxiliar = inicio;
+                int pos = 0;
+
+                while ((pos < Posicion))
+                {
+                    auxiliar = auxiliar.Siguiente;
+                    pos++;
+                }
+                auxiliar.Anterior.Siguiente = NodoAdd;
+                NodoAdd.Anterior = auxiliar.Anterior;
+                auxiliar.Anterior = NodoAdd;
+                NodoAdd.Siguiente = auxiliar;
+                contador++;
+            }
+        }
+
         public void InsertarFinal(T NuevoValor)
         {
             Nodo<T> nuevoNodo = new Nodo<T>();

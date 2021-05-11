@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Arbol;
 using ArbolAVL;
 using Proyecto_Estructuras.Models;
 
@@ -10,9 +11,9 @@ namespace Proyecto_Estructuras
     public class Singleton
     {
         private static Singleton instance = null;
-        public Arbol<PacienteArbol> ArbolPacientesNombres = new Arbol<PacienteArbol>();
-        public Arbol<PacienteArbol> ArbolPacientesApellidos = new Arbol<PacienteArbol>();
-        public Arbol<PacienteArbol> ArbolPacientesDPI = new Arbol<PacienteArbol>();
+        public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesNombres = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
+        public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesApellidos = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
+        public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesDPI = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
 
         protected Singleton()
         {

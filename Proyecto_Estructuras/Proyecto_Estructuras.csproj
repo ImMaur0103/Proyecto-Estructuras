@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArbolAVL\ArbolAVL.csproj" />
+    <ProjectReference Include="..\Arbol\Arbol.csproj" />
     <ProjectReference Include="..\ListaDobleEnlace\ListaDobleEnlace.csproj" />
     <ProjectReference Include="..\THash\THash.csproj" />
   </ItemGroup>
