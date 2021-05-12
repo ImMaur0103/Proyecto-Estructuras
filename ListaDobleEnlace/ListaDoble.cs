@@ -76,11 +76,18 @@ namespace ListaDobleEnlace
                     auxiliar = auxiliar.Siguiente;
                     pos++;
                 }
-                auxiliar.Anterior.Siguiente = NodoAdd;
-                NodoAdd.Anterior = auxiliar.Anterior;
-                auxiliar.Anterior = NodoAdd;
-                NodoAdd.Siguiente = auxiliar;
-                contador++;
+                if(Posicion == 0)
+                {
+                    InsertarInicio(NodoAdd.Valor);
+                }
+                else
+                {
+                    auxiliar.Anterior.Siguiente = NodoAdd;
+                    NodoAdd.Anterior = auxiliar.Anterior;
+                    auxiliar.Anterior = NodoAdd;
+                    NodoAdd.Siguiente = auxiliar;
+                    contador++;
+                }
             }
         }
 
@@ -143,7 +150,8 @@ namespace ListaDobleEnlace
             if (posicion >= 0 && posicion < contador)
             {
 
-                Nodo<T> temporal = inicio;
+                Nodo<T> temporal = new Nodo<T>();
+                temporal = inicio;
                 int ubicacion = 0;
 
                 while (ubicacion < posicion)

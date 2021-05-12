@@ -6,28 +6,39 @@ using Arbol;
 
 namespace Arbol
 {
-    class ColaPrioridad
+    public class ColaPrioridad
     {
-        private ListaDoble<Nodo<PacienteArbol>> Cola;
+        ListaDoble<Nodo<Prioridad>> Cola;
 
-        ColaPrioridad()
+        public ColaPrioridad()
         {
-            Cola = new ListaDoble<Nodo<PacienteArbol>>();
+            Cola = new ListaDoble<Nodo<Prioridad>>();
         }
         ~ColaPrioridad() { }
 
-        /*public void Insertar(PacienteArbol paciente)
+        public void Insertar(Prioridad paciente)
         {
-            Nodo<PacienteArbol> nodo = new Nodo<PacienteArbol>();
+            Nodo<Prioridad> nodo = new Nodo<Prioridad>();
             nodo.valor = paciente;
-            if(paciente.Prioridad < 3)
+            if(paciente.prioridad < 4 && Cola.contador > 0)
             {
-                for (int i = 0; i < Cola.contador; i++)
+                int NodosEnArbol = Cola.contador;
+                for (int i = 0; i < NodosEnArbol; i++)
                 {
-                    if(Cola.ObtenerValor(i).valor.Prioridad > paciente.Prioridad)
+                    if(Cola.ObtenerValor(i).valor.prioridad > paciente.prioridad)
                     {
                         Cola.InsertarEnPosicion(nodo, (i));
+                        Cola.ObtenerValor(i).indice = i;
+                        break;
                     }
+                    Cola.ObtenerValor(i).indice = i;
+                }
+                if(NodosEnArbol == Cola.contador)
+                {
+                    Cola.InsertarFinal(nodo);
+                }
+                for (int i = 0; i < NodosEnArbol; i++)
+                {
                     Cola.ObtenerValor(i).indice = i;
                 }
             }
@@ -35,9 +46,28 @@ namespace Arbol
             {
                 Cola.InsertarFinal(nodo);
             }
-        }*/
+        }
 
-        public ListaDoble<Nodo<PacienteArbol>> ObtenerCola()
+        public void InsertarConArbol(Arbol<Prioridad> arbol)
+        {
+            for (int i = 0; i < arbol.contador; i++)
+            {
+                Insertar(arbol.BuscarConIndice(i+1).valor);
+            }
+        }
+
+        public int Buscar(Prioridad paciente)
+        {
+            for (int i = 0; i < Cola.contador; i++)
+            {
+                if(paciente == Cola.ObtenerValor(i).valor)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        public ListaDoble<Nodo<Prioridad>> ObtenerCola()
         {
             return Cola;
         }

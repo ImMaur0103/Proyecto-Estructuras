@@ -220,15 +220,23 @@ namespace Proyecto_Estructuras.Controllers
                     }
 
                     Prioridad DatosPrioridad = new Prioridad();
+                    ColaPrioridad Cola = new ColaPrioridad();
                     for (int i = 0; i < 3; i++)
                     {
                         // Pasa datos de tabla hash a lista doble
                         for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
                         {
                             paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                            OrdenarPrioridad(nuevo.DPI_CUI.ToString(), nuevo.Prioridad);
+                            Prioridad Paciente = new Prioridad();
+                            Paciente.prioridad = nuevo.Prioridad;
+                            Paciente.Cui = nuevo.DPI_CUI.ToString();
+                            Cola.Insertar(Paciente);
                             Singleton.Instance.ListCui.InsertarInicio(nuevo.DPI_CUI);
                         }
+                    }
+                    for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                    {
+                        OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
                     }
 
                     // Obtener los datos del heap para insertarlos en la lista doble que se mostrará
@@ -261,7 +269,13 @@ namespace Proyecto_Estructuras.Controllers
                 TablasHashPacientes.Insertar(PacienteAgregar, PacienteAgregar.DPI_CUI.ToString());
 
                 // Ordenar según prioridad
-                OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad);
+                ColaPrioridad ColaHeap = new ColaPrioridad();
+                ColaHeap.InsertarConArbol(Heap);
+                Prioridad paciete = new Prioridad();
+                paciete.Cui = PacienteAgregar.DPI_CUI.ToString();
+                paciete.prioridad = PacienteAgregar.Prioridad;
+                ColaHeap.Insertar(paciete);
+                OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad, ColaHeap.Buscar(paciete) + 1);
 
                 // Se adjunta paciente a la lista doble
                 LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
@@ -666,24 +680,25 @@ namespace Proyecto_Estructuras.Controllers
             return "";
         }
 
-        void OrdenarPrioridad(string cui, int prioridad)
+        void OrdenarPrioridad(string cui, int prioridad, int indice)
         {
             Prioridad dato = new Prioridad();
             dato.prioridad = prioridad;
             dato.Cui = cui;
-            
 
-            Heap.Insertar(dato);
+            Heap.Insertar(dato, indice);
         }
 
         void LlenarLista(ListaDoble<paciente> ListaDoble, Arbol.Arbol<Prioridad> Heap, THash<paciente> THash)
         {
             Arbol.Nodo<Prioridad> valorPrioridad = new Arbol.Nodo<Prioridad>();
             paciente infoPaciente = new paciente();
+            ColaPrioridad Cola = new ColaPrioridad();
 
-            while (Heap.contador > 0)
+            Cola.InsertarConArbol(Heap);
+            for (int i = 0; i < Cola.ObtenerCola().contador; i++)
             {
-                valorPrioridad = Heap.Eliminar();
+                valorPrioridad = Cola.ObtenerCola().ObtenerValor(i);
                 infoPaciente = ObtenerValor(THash, valorPrioridad.valor.Cui, THash.Llave(valorPrioridad.valor.Cui.ToString()));
                 ListaDoble.InsertarFinal(infoPaciente);
             }

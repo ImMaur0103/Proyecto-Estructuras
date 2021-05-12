@@ -10,7 +10,7 @@ namespace Arbol
     {
         public Nodo<T> raiz;
         public int contador;
-        //private int UltimoIndice;
+        private int UltimoIndice;
 
         //constructor 
         public Arbol()
@@ -21,10 +21,11 @@ namespace Arbol
 
         ~Arbol() { }
 
-        public void Insertar(Prioridad valor)
+        public void Insertar(Prioridad valor, int indice)
         {
             Nodo<T> NuevoNodo = new Nodo<T>();
             NuevoNodo.valor = valor;
+            NuevoNodo.indice = indice;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
 
@@ -34,7 +35,7 @@ namespace Arbol
             }
             else
             {
-                raiz = InsertarNodo(raiz, NuevoNodo);
+                raiz = InsertarHeap(raiz, NuevoNodo);
             }
             contador++;
         }
@@ -96,8 +97,38 @@ namespace Arbol
             }
             return recorrer.valor.prioridad;
         }
+        public Nodo<T> BuscarConIndice(int Indice)
+        {
+            return Buscando(Indice, raiz);
+        }
+        private Nodo<T> Buscando(int Indice, Nodo<T> Padre)
+        {
+            Nodo<T> Retornar = new Nodo<T>();
+            int buscando = Indice;
+            while (buscando > Padre.izquierda.indice && buscando > Padre.derecha.indice)
+            {
+                buscando /= 2;
+            }
+            if(Indice != buscando)
+            {
+                if (Padre.izquierda.indice == buscando)
+                    Retornar = Buscando(Indice, Padre.izquierda);
+                else
+                    Retornar = Buscando(Indice, Padre.derecha);
+            }
+            else
+            {
+                if (Indice == Padre.indice)
+                    Retornar = Padre;
+                else if (Indice == Padre.izquierda.indice)
+                    Retornar = Padre.izquierda;
+                else
+                    Retornar = Padre.derecha;
+            }
+            return Retornar;
+        }
 
-        /*public Nodo<T> Eliminar()
+        public Nodo<T> Eliminar()
         {
             if (raiz == null)
                 return raiz;
@@ -149,8 +180,7 @@ namespace Arbol
                 }
             }
             return raiz;
-        }*/
-
+        }
         private Nodo<T> RotarDerecha(Nodo<T> nodo)
         {
             Nodo<T> auxilar = nodo.izquierda;
@@ -173,9 +203,61 @@ namespace Arbol
             contador = 0;
         }
 
+        private Nodo<T> InsertarHeap(Nodo<T> Padre, Nodo<T> Nuevo)
+        {
+            int buscando = Nuevo.indice;
+            if (Padre.derecha != null)
+            {
+                if(buscando == Padre.indice)
+                {
+                    Nodo<T> aux = new Nodo<T>();
+                    aux.valor = Padre.valor;
+                    aux.indice = Padre.indice + 1;
+                    Padre.valor = Nuevo.valor;
+                    Padre = InsertarHeap(Padre, aux);
+                }
+                while (buscando > Padre.izquierda.indice && buscando > Padre.derecha.indice)
+                {
+                    buscando /= 2;
+                }
+                if (buscando == Padre.izquierda.indice)
+                {
+                    Padre.izquierda = InsertarHeap(Padre.izquierda, Nuevo);
+                }
+                else if (buscando == Padre.derecha.indice)
+                {
+                    Padre.derecha = InsertarHeap(Padre.derecha, Nuevo);
+                }
+            }
+            else
+            {
+                if (Padre.izquierda != null)
+                {
+                    Padre.derecha = Nuevo;
+                    return Padre;
+                }
+                else
+                {
+                    Padre.izquierda = Nuevo;
+                    return Padre;
+                }
+            }
+            return Padre;
+        }
 
+        private int CalAlturas(Nodo<T> obtener)
+        {
+            if (obtener == null)
+            {
+                return -1;
+            }
+            else
+            {
+                return obtener.altura;
+            }
+        }
         // Insertar nodos en el árbol 
-        /*public void Insertar(PacienteArbol valor)
+        /*public void Insertar(Prioridad valor)
         {
             Nodo<T> NuevoNodo = new Nodo<T>();
             NuevoNodo.valor = valor;
