@@ -17,10 +17,13 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+
 namespace Proyecto_Estructuras.Controllers
 {
     public class HomeController : Controller
     {
+
+        Arbol.Arbol<Prioridad> Heap = new Arbol.Arbol<Prioridad>();
         const string RutaUsuario = "\\files\\Users\\Users.csv";
         const string RutaCentros = "\\files\\InformacionCentro\\";
         const string RutaPacientes = "\\files\\InformacionPacientes\\";
@@ -197,6 +200,7 @@ namespace Proyecto_Estructuras.Controllers
         public IActionResult Registrar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Departamento, string Municipio_residencia,
             int Edad, bool Vacunado, string Grupo, paciente model)
         {
+            THash<paciente> TablasHashPacientes = new THash<paciente>();
             if (Nombre != null && Apellido != null &&  ValidarCui(DPI_CUI) && Departamento != 0 && Municipio_residencia != null && Edad > 17)
             {
                 string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
@@ -207,7 +211,6 @@ namespace Proyecto_Estructuras.Controllers
                 using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
                 {
                     // Pasa del archivo csv a tabla hash
-                    THash<paciente> TablasHashPacientes = new THash<paciente>();
                     CSV.Read();
                     CSV.ReadHeader();
                     while (CSV.Read())
@@ -216,16 +219,20 @@ namespace Proyecto_Estructuras.Controllers
                         TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
                     }
 
+                    Prioridad DatosPrioridad = new Prioridad();
                     for (int i = 0; i < 3; i++)
                     {
                         // Pasa datos de tabla hash a lista doble
                         for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
                         {
                             paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                            ListaPacientes.InsertarFinal(nuevo);
+                            OrdenarPrioridad(nuevo.DPI_CUI.ToString(), nuevo.Prioridad);
                             Singleton.Instance.ListCui.InsertarInicio(nuevo.DPI_CUI);
                         }
                     }
+
+                    // Obtener los datos del heap para insertarlos en la lista doble que se mostrará
+                    //LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
                 }
                 bool enfermedad;
 
@@ -251,9 +258,16 @@ namespace Proyecto_Estructuras.Controllers
                 }
 
                 PacienteAgregar.Prioridad = DefinirPrioridad(Convert.ToInt32(Grupo), Edad, enfermedad);
+                TablasHashPacientes.Insertar(PacienteAgregar, PacienteAgregar.DPI_CUI.ToString());
+
+                // Ordenar según prioridad
+                OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad);
+
+                // Se adjunta paciente a la lista doble
+                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
 
                 //Se adjunta el paciente a la Lista doble
-                ListaPacientes.InsertarFinal(PacienteAgregar);
+                //ListaPacientes.InsertarFinal(PacienteAgregar);
 
                 //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
                 using (StreamWriter sw = new StreamWriter(FileName))
@@ -505,6 +519,7 @@ namespace Proyecto_Estructuras.Controllers
             PacienteAgregar.fecha = fecha;
             PacienteAgregar.Prioridad = Prioridad;
 
+
             //Se adjunta el paciente a la Lista doble
             ListaPacientes.InsertarFinal(PacienteAgregar);
 
@@ -593,7 +608,6 @@ namespace Proyecto_Estructuras.Controllers
             {
                 return false;
             }
-            return false;
         }
 
         int DefinirPrioridad(int Grupo, int edad, bool enfermedad)
@@ -650,6 +664,79 @@ namespace Proyecto_Estructuras.Controllers
                     break;
             }
             return "";
+        }
+
+        void OrdenarPrioridad(string cui, int prioridad)
+        {
+            Prioridad dato = new Prioridad();
+            dato.prioridad = prioridad;
+            dato.Cui = cui;
+            
+
+            Heap.Insertar(dato);
+        }
+
+        void LlenarLista(ListaDoble<paciente> ListaDoble, Arbol.Arbol<Prioridad> Heap, THash<paciente> THash)
+        {
+            Arbol.Nodo<Prioridad> valorPrioridad = new Arbol.Nodo<Prioridad>();
+            paciente infoPaciente = new paciente();
+
+            while (Heap.contador > 0)
+            {
+                valorPrioridad = Heap.Eliminar();
+                infoPaciente = ObtenerValor(THash, valorPrioridad.valor.Cui, THash.Llave(valorPrioridad.valor.Cui.ToString()));
+                ListaDoble.InsertarFinal(infoPaciente);
+            }
+
+            /*
+            while(Heap != null)
+            {
+                var Prioridad = Heap.Eliminar().valor;
+                var Paciente = ObtenerValor(THash, Prioridad.Cui, THash.Llave(Prioridad.Cui.ToString()));
+                ListaDoble.InsertarFinal(Paciente);
+            }*/
+        }
+
+        paciente ObtenerValor(THash<paciente> Hash, string dato, int llave)
+        {
+            paciente valor = new paciente();
+            bool encontar = false;
+            switch (llave)
+            {
+                case 0:
+                    for (int i = 0; i < Hash.HashTable[0].contador; i++)
+                    {
+                        valor = Hash.HashTable[0].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        {
+                            return valor;
+                        }
+                    }
+                    break;
+                case 1:
+                    for (int i = 0; i < Hash.HashTable[1].contador; i++)
+                    {
+                        valor = Hash.HashTable[1].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        {
+                            return valor;
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int i = 0; i < Hash.HashTable[2].contador; i++)
+                    {
+                        valor = Hash.HashTable[2].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        {
+                            return valor;
+                        }
+                    }
+                    break; 
+                default:
+                    break;
+            }
+            return null;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

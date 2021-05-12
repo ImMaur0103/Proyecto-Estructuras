@@ -16,7 +16,7 @@ namespace Arbol
         }
         ~ColaPrioridad() { }
 
-        public void Insertar(PacienteArbol paciente)
+        /*public void Insertar(PacienteArbol paciente)
         {
             Nodo<PacienteArbol> nodo = new Nodo<PacienteArbol>();
             nodo.valor = paciente;
@@ -35,7 +35,7 @@ namespace Arbol
             {
                 Cola.InsertarFinal(nodo);
             }
-        }
+        }*/
 
         public ListaDoble<Nodo<PacienteArbol>> ObtenerCola()
         {

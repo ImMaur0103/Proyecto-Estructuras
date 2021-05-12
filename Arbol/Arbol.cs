@@ -6,11 +6,11 @@ using ListaDobleEnlace;
 
 namespace Arbol
 {
-    public class Arbol<T>:Nodo<T>
+    public class Arbol<T> : Nodo<T>
     {
         public Nodo<T> raiz;
         public int contador;
-        private int UltimoIndice;
+        //private int UltimoIndice;
 
         //constructor 
         public Arbol()
@@ -21,8 +21,161 @@ namespace Arbol
 
         ~Arbol() { }
 
+        public void Insertar(Prioridad valor)
+        {
+            Nodo<T> NuevoNodo = new Nodo<T>();
+            NuevoNodo.valor = valor;
+            NuevoNodo.izquierda = null;
+            NuevoNodo.derecha = null;
+
+            if (raiz == null)
+            {
+                raiz = NuevoNodo;
+            }
+            else
+            {
+                raiz = InsertarNodo(raiz, NuevoNodo);
+            }
+            contador++;
+        }
+
+        private Nodo<T> InsertarNodo(Nodo<T> actual, Nodo<T> nuevo)
+        {
+            if (actual == null)
+            {
+                return nuevo;
+            }
+            if (actual.valor.Cui.CompareTo(nuevo.valor.Cui) < 0)
+            {
+                actual.derecha = InsertarNodo(actual.derecha, nuevo);
+                if (actual.derecha.valor.prioridad < actual.valor.prioridad)
+                {
+                    actual = RotarIzquierda(actual);
+                }
+            }
+            else
+            {
+                actual.izquierda = InsertarNodo(actual.izquierda, nuevo);
+                if (actual.izquierda.valor.prioridad < actual.valor.prioridad)
+                {
+                    actual = RotarDerecha(actual);
+                }
+            }
+            return actual;
+        }
+
+        public int Buscar(string nombre)
+        {
+            Nodo<T> recorrer = raiz;
+            bool encontrar = false;
+            while (recorrer != null && encontrar == false)
+            {
+                string valor = recorrer.valor.Cui;
+                valor = valor.ToLower();
+                if (nombre == valor)
+                {
+                    encontrar = true;
+                }
+                else
+                {
+                    if (nombre.CompareTo(recorrer.valor.Cui) > 0)
+                    {
+                        recorrer = recorrer.derecha;
+                        encontrar = false;
+                    }
+                    else
+                    {
+                        recorrer = recorrer.izquierda;
+                        encontrar = false;
+                    }
+                }
+            }
+            if (recorrer == null)
+            {
+                return 0;
+            }
+            return recorrer.valor.prioridad;
+        }
+
+        /*public Nodo<T> Eliminar()
+        {
+            if (raiz == null)
+                return raiz;
+            else
+            {
+                //Si el nodo raiz del árbol tiene dos hijos
+                if (raiz.izquierda != null)
+                {
+                    if (raiz.derecha != null)
+                    {
+                        //Se valida la prioridad
+                        if (raiz.izquierda.valor.prioridad < raiz.derecha.valor.prioridad)
+                        {
+                            // Método rotar a la derecha
+                            raiz = RotarDerecha(raiz);
+                            raiz.derecha = Eliminar();
+                        }
+                        else
+                        {
+                            raiz = RotarIzquierda(raiz);
+                            raiz.izquierda = Eliminar();
+                        }
+                    }
+                    else
+                    {
+                        Nodo<T> auxiliar = raiz;
+                        raiz.valor = null;
+                        contador--;
+                        return auxiliar;
+                    }
+                }
+                else
+                {
+                    if (raiz.derecha != null)
+                    {
+                        Nodo<T> auxiliar = raiz;
+                        raiz.valor = null;
+                        contador--;
+                        return auxiliar;
+                    }
+                    else
+                    {
+                        // El nodo es hoja
+                        Nodo<T> auxiliar = raiz;
+                        raiz = null;
+                        contador--;
+                        return auxiliar;
+                    }
+                }
+            }
+            return raiz;
+        }*/
+
+        private Nodo<T> RotarDerecha(Nodo<T> nodo)
+        {
+            Nodo<T> auxilar = nodo.izquierda;
+            nodo.izquierda = auxilar.derecha;
+            auxilar.derecha = nodo;
+            return auxilar;
+        }
+
+        private Nodo<T> RotarIzquierda(Nodo<T> nodo)
+        {
+            Nodo<T> auxiliar = nodo.derecha;
+            nodo.derecha = auxiliar.izquierda;
+            auxiliar.izquierda = nodo;
+            return auxiliar;
+        }
+
+        public void Delete()
+        {
+            raiz = null;
+            contador = 0;
+        }
+
+
         // Insertar nodos en el árbol 
-        public void Insertar(PacienteArbol valor)
+        /*public void Insertar(PacienteArbol valor)
         {
             Nodo<T> NuevoNodo = new Nodo<T>();
             NuevoNodo.valor = valor;
@@ -249,5 +402,6 @@ namespace Arbol
             raiz = null;
             contador = 0;
         }
+    }*/
     }
 }
