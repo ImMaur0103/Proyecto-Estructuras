@@ -1,11 +1,11 @@
-﻿@*
+﻿@model Proyecto_Estructuras.Models.paciente
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
-        <a class="" asp-area="" asp-controller="Home" asp-action="Index">Centro general Vacunacion Covid</a>
+        <a class="" asp-area="" asp-controller="Home" asp-action="Index">Centro General Vacunacion Covid</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -37,8 +37,8 @@
         </div>
     </div>
 </nav>
-<form method="post" action="Registrar" class="Registrar">
 
+<form method="post" action="Registrar" class="Registrar">
     <div class="form-floating mb-3">
         <label for="floatingInput">Nombre</label>
         <input type="text" class="form-control" name="Nombre" placeholder="Nombre">
@@ -51,27 +51,250 @@
         <label for="floatingInput">DPI, o en caso de no poseer ingrese CUI</label>
         <input type="tel" class="form-control" name="DPI_CUI" placeholder="DPI/CUI">
     </div>
+    @{
+        var listado2 = new List<SelectListItem>()
+{
+        new SelectListItem()
+        {
+            Text = "Alta Verapaz",
+            Value = "1"
+        },
+        new SelectListItem()
+        {
+            Text = "Baja Verapaz",
+            Value = "2"
+        },
+        new SelectListItem()
+        {
+            Text = "Chimaltenango",
+            Value = "3"
+        },
+        new SelectListItem()
+        {
+            Text = "Chiquimula",
+            Value = "4"
+        },
+        new SelectListItem()
+        {
+            Text = "El Progreso",
+            Value = "5"
+        },
+        new SelectListItem()
+        {
+            Text = "Escuintla",
+            Value = "6"
+        },
+        new SelectListItem()
+        {
+            Text = "Guatemala",
+            Value = "7"
+        },
+        new SelectListItem()
+        {
+            Text = "Huehuetenango",
+            Value = "8"
+        },
+        new SelectListItem()
+        {
+            Text = "Izabal",
+            Value = "9"
+        },
+        new SelectListItem()
+        {
+            Text = "Jalapa",
+            Value = "10"
+        },
+        new SelectListItem()
+        {
+            Text = "Jutiapa",
+            Value = "11"
+        },
+        new SelectListItem()
+        {
+            Text = "Petén",
+            Value = "12"
+        },
+        new SelectListItem()
+        {
+            Text = "Quetzaltenango",
+            Value = "13"
+        },
+        new SelectListItem()
+        {
+            Text = "Quiché",
+            Value = "14"
+        },
+        new SelectListItem()
+        {
+            Text = "Retalhuleu",
+            Value = "15"
+        },
+        new SelectListItem()
+        {
+            Text = "Sacátepequez",
+            Value = "16"
+        },
+        new SelectListItem()
+        {
+            Text = "San Marcos",
+            Value = "17"
+        },
+        new SelectListItem()
+        {
+            Text = "Santa Rosa",
+            Value = "18"
+        },
+        new SelectListItem()
+        {
+            Text = "Sololá",
+            Value = "19"
+        },
+        new SelectListItem()
+        {
+            Text = "Suchitepéquez",
+            Value = "20"
+        },
+        new SelectListItem()
+        {
+            Text = "Totonicapán",
+            Value = "21"
+        },
+        new SelectListItem()
+        {
+            Text = "Zacapa",
+            Value = "22"
+        },
+        };
+    }
+    <p></p>
+    <label>Departamento:</label>
+    @Html.DropDownList("Departamento", listado2)
+    <p></p>
+
+    <!--
     <div class="form-floating mb-3">
         <label for="floatingInput">Departamento</label>
         <input type="text" class="form-control" name="Departamento" placeholder="Departamento">
     </div>
+    -->
     <div class="form-floating">
-        <label for="floatingInput">Municipo donde usted recide</label>
+        <label for="floatingInput">Municipio donde usted reside:</label>
         <input type="text" class="form-control" name="Municipio_residencia" placeholder="Municipio de residencia">
     </div>
     <div class="form-floating">
         <label for="floatingInput">Edad</label>
         <input type="tel" class="form-control" name="Edad" placeholder="Edad">
     </div>
+
+    @{
+        var listado = new List<SelectListItem>()
+{
+            new SelectListItem()
+            {
+                Text = "Médico, atiende pacientes con COVID-19",
+                Value = "1"
+            },
+            new SelectListItem()
+            {
+                Text = "Médico",
+                Value = "2"
+            },
+            new SelectListItem()
+            {
+                Text = "Estudiante ciencias de la salud",
+                Value = "3"
+            },
+            new SelectListItem()
+            {
+                Text = "Cuerpos de Socorro",
+                Value = "4"
+            },
+            new SelectListItem()
+            {
+                Text = "Personas internadas en asilos",
+                Value = "5"
+            },
+            new SelectListItem()
+            {
+                Text = "Administrativos (sector salud)",
+                Value = "6"
+            },
+            new SelectListItem()
+            {
+                Text = "Docente",
+                Value = "7"
+            },
+            new SelectListItem()
+            {
+                Text = "Policía",
+                Value = "8"
+            },
+            new SelectListItem()
+            {
+                Text = "Militar",
+                Value = "9"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector seguridad nacional",
+                Value = "10"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector municipal",
+                Value = "11"
+            },
+            new SelectListItem()
+            {
+                Text = "Eggsa",
+                Value = "12"
+            },
+            new SelectListItem()
+            {
+                Text = "Empagua",
+                Value = "13"
+            },
+            new SelectListItem()
+            {
+                Text = "Ministerio de educación",
+                Value = "14"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector Justicia",
+                Value = "15"
+            },
+            new SelectListItem()
+            {
+                Text = "Otro",
+                Value = "16"
+            },
+        };
+    }
+    <p></p>
+        <label>Grupo al que pertenece:</label>
+        @Html.DropDownList("Grupo", listado)
+        <p></p>
+
+    <label>¿Padece alguna enfermedad crónica?:</label>
+    <div class="form-group">
+        @Html.RadioButtonFor(model => model.Enfermedad, "Sí", new { @checked = "true" }) Sí
+        @Html.RadioButtonFor(model => model.Enfermedad, "No") No
+    </div>
+    <!--
     <div class="form-floating">
         <label for="floatingInput">Prioridad</label>
         <input type="tel" class="form-control" name="Prioridad" placeholder="Prioridad">
     </div>
+    -->
     <div class="form-floating">
         <label for="floatingInput">Vacunado</label>
         <input class="Checkbox" data-val="true" data-val-required="The Vacunado field is required." id="Vacunado" name="Vacunado" type="checkbox" value="true">
     </div>
+    <h1 class="text-primary"> @ViewBag.Mensaje </h1>
     <div>
         <center><button type="submit" class="Boton">Agregar</button></center>
     </div>
+    <p></p>
+    <!--</form>-->
 </form>

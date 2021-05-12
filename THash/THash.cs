@@ -17,6 +17,7 @@ namespace THash
             HashTable[2] = Lista2;
         }
 
+        /*
         public int Llave(int Titulo)
         {
             int posicion;
@@ -30,11 +31,30 @@ namespace THash
             }
 
             return codigo;
+        }*/
+
+        public int Llave(string Cui)
+        {
+            char[] array = new char[Cui.Length];
+            char letra;
+            int posicion;
+            int codigo = 0;
+
+            for (int i = 0; i < Cui.Length; i++)
+            {
+                array[i] = Cui[i];
+                letra = array[i];
+                posicion = Convert.ToInt32(letra) * (i + 1);
+                codigo += posicion;
+            }
+            codigo = codigo % HashTable.Length;
+
+            return codigo;
         }
 
-        public void Insertar(T valor, int Titulo)
+        public void Insertar(T valor, string cui)
         {
-            int llave = Llave(Titulo);
+            int llave = Llave(cui);
 
             switch (llave)
             {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Arbol;
 using ArbolAVL;
 using Proyecto_Estructuras.Models;
+using ListaDobleEnlace;
 
 namespace Proyecto_Estructuras
 {
@@ -14,6 +15,7 @@ namespace Proyecto_Estructuras
         public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesNombres = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
         public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesApellidos = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
         public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesDPI = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
+        public ListaDoble<long> ListCui = new ListaDoble<long>(); 
 
         protected Singleton()
         {

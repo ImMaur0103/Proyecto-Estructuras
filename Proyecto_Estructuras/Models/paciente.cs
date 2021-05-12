@@ -14,6 +14,9 @@ namespace Proyecto_Estructuras.Models
         public string Municipio_residencia { get; set; }
         public int Edad { get; set; }
         public bool Vacunado { get; set; }
-        public int Prioridad { get; set; }
+        public int Prioridad { get; set; }  // Se debe calcular, depende del grupo al que pertenece 
+        public string Grupo { get; set; } // Depende de las opciones del drop down list 
+        public string Enfermedad { get; set; } // Funciona para el radiobutton 
+
     }
 }
