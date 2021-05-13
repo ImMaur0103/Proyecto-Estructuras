@@ -91,9 +91,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Fecha)
                 </td>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.Hora)
+                </td>
+                <td>
+                    <a href="@Url.Action("Vacunacion","Home")">Actualizar</a>
+                </td>
+                <td>
+                    <a href="@Url.Action("Reagendar","Home")">Reagendar</a>
                 </td>
             </tr>
             }

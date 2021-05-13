@@ -14,5 +14,7 @@ namespace Proyecto_Estructuras.Models
         public int Prioridad { get; set; }
         public string Fecha { get; set; }
         public string Hora { get; set; }
+        public string MarcaVacuna { get; set; }
+        public int Dosis { get; set; }
     }
 }

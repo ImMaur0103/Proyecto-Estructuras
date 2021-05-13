@@ -502,7 +502,7 @@ namespace Proyecto_Estructuras.Controllers
             return Redirect("Editar");
         }
 
-
+        // Muestra la cola de prioridad, se podrá elegir la opción de vacunado o reagendar cita
         public IActionResult Espera([FromServices] IHostingEnvironment HostEnvi)
         {
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
@@ -545,6 +545,18 @@ namespace Proyecto_Estructuras.Controllers
                 }
             }
             return View("Registro");
+        }
+
+        // Permite guardar los datos de vacunación para el paciente 
+        [HttpPost]
+        public IActionResult Vacunacion()
+        {
+            return View();
+        }
+
+        public IActionResult Reagendar()
+        {
+            return View("Espera");
         }
 
         [HttpGet]
@@ -765,6 +777,31 @@ namespace Proyecto_Estructuras.Controllers
             }
         }
 
+        // Recibe la lista de prioridad de los pacientes y tabla hash donde se guardará la info. de las citas, asigna fecha y hora
+        void ProgramarCita(Arbol.Arbol<Prioridad> Heap, THash<Citas> InfoCitas)
+        {
+            ColaPrioridad Cola = new ColaPrioridad();
+            Arbol.Nodo<Prioridad> valorPrioridad = new Arbol.Nodo<Prioridad>();
+            ListaDoble<Prioridad> DatosPaciente = new ListaDoble<Prioridad>();
+            int hora = 8;
+            int minuto = 00;
+
+            // Ordena los pacientes según prioridad dentro de una lista
+            Cola.InsertarConArbol(Heap);
+            for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+            {
+                valorPrioridad = Cola.ObtenerCola().ObtenerValor(i);
+                DatosPaciente.InsertarFinal(valorPrioridad.valor);
+            }
+
+            for (int i = 0; i < DatosPaciente.contador; i++)
+            {
+                // Se debe buscar el paciente dentro de la tabla hash 
+            }
+
+        }
+
+
         paciente ObtenerValor(THash<paciente> Hash, string dato, int llave)
         {
             paciente valor = new paciente();
@@ -807,6 +844,7 @@ namespace Proyecto_Estructuras.Controllers
             return null;
         }
 
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
