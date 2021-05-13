@@ -355,23 +355,47 @@ namespace Proyecto_Estructuras.Controllers
         {
             paciente Buscado = new paciente();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesNombres.RetornarValor(Singleton.Instance.ArbolPacientesNombres, Nombre, Singleton.Instance.ArbolPacientesNombres.Buscar);
-            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+            if(info != null)
+            {
+                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                return View("Buscar", Buscado);
+            }
+            else
+            {
+                ViewBag.Mensaje = "Paciente no encontrado";
+                return View("Buscar");
+            }
 
-            return View("Buscar", Buscado);
         }
         public IActionResult BuscarApellido(string Apellido)
         {
             paciente Buscado = new paciente();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesApellidos.RetornarValor(Singleton.Instance.ArbolPacientesApellidos, Apellido, Singleton.Instance.ArbolPacientesApellidos.BuscarA);
-            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Apellido, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
-            return View("Buscar", Buscado);
+            if(info != null)
+            {
+                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Apellido, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                return View("Buscar", Buscado);
+            }
+            else
+            {
+                ViewBag.Mensaje = "Paciente no encontrado";
+                return View();
+            }
         }
         public IActionResult BuscarDPIoCUI(long DPI_CUI)
         {
             paciente Buscado = new paciente();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesDPI.RetornarValor(Singleton.Instance.ArbolPacientesDPI, DPI_CUI.ToString(), Singleton.Instance.ArbolPacientesDPI.BuscarNumero);
-            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, DPI_CUI.ToString(), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
-            return View("Buscar", Buscado);
+            if(info != null)
+            {
+                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, DPI_CUI.ToString(), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                return View("Buscar", Buscado);
+            }
+            else
+            {
+                ViewBag.Mensaje = "Paciente no encontrado";
+                return View();
+            }
         }
 
         //-----------------------------------------------------------------------
@@ -484,7 +508,6 @@ namespace Proyecto_Estructuras.Controllers
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
 
-
             FileInfo Myfile = new FileInfo(FileName);
             if (Myfile.Exists)
             {
@@ -518,12 +541,12 @@ namespace Proyecto_Estructuras.Controllers
                 Directory.CreateDirectory($"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}");
                 using (StreamWriter sw = new StreamWriter(FileName))
                 {
-                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,fecha");
+                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
                 }
             }
-
             return View("Registro");
         }
+
         [HttpGet]
         public IActionResult Agendar()
         {
@@ -567,7 +590,7 @@ namespace Proyecto_Estructuras.Controllers
             PacienteAgregar.Apellido = Apellido;
             PacienteAgregar.DPI_CUI = DPI_CUI;
             PacienteAgregar.Edad = Edad;
-            PacienteAgregar.fecha = fecha;
+            PacienteAgregar.Fecha = fecha;
             PacienteAgregar.Prioridad = Prioridad;
 
 
@@ -586,7 +609,8 @@ namespace Proyecto_Estructuras.Controllers
                     Retornar += "," + Convert.ToString(reorganizar.DPI_CUI);
                     Retornar += "," + Convert.ToString(reorganizar.Edad);
                     Retornar += "," + Convert.ToString(reorganizar.Prioridad);
-                    Retornar += "," + reorganizar.fecha;
+                    Retornar += "," + reorganizar.Fecha;
+                    Retornar += "," + reorganizar.Hora;
                     sw.WriteLine(Retornar);
                 }
             }

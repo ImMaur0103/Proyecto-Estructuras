@@ -58,7 +58,10 @@
                 @Html.DisplayNameFor(model => model.Prioridad)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.fecha)
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hora)
             </th>
         </tr>
     </thead>
@@ -86,7 +89,11 @@
                     @Html.DisplayFor(modelItem => item.Prioridad)
                 </th>
                 <td>
-                    @Html.DisplayFor(modelItem => item.fecha)
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hora)
                 </td>
             </tr>
             }
