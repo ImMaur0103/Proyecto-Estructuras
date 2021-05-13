@@ -83,15 +83,24 @@ namespace Proyecto_Estructuras.Controllers
                                 }
 
                                 ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+                                Prioridad DatosPrioridad = new Prioridad();
+                                ColaPrioridad Cola = new ColaPrioridad();
                                 for (int i = 0; i < 3; i++)
                                 {
-                                    
                                     for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
                                     {
                                         paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                                        ListaPacientes.InsertarFinal(nuevo);
+                                        Prioridad Paciente = new Prioridad();
+                                        Paciente.prioridad = nuevo.Prioridad;
+                                        Paciente.Cui = nuevo.DPI_CUI.ToString();
+                                        Cola.Insertar(Paciente);
                                     }
                                 }
+                                for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                                {
+                                    OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
+                                }
+                                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
                                 return View("Registro", ListaPacientes);
                             }
                             else
@@ -102,7 +111,6 @@ namespace Proyecto_Estructuras.Controllers
                                     sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad,Grupo,Enfermedad");
                                 }
                             }
-
                             return View("Registro");
                         }
                     }
@@ -174,18 +182,27 @@ namespace Proyecto_Estructuras.Controllers
                 {
                     var Paciente = CSV.GetRecord<paciente>();
                     TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
-                } 
+                }
 
 
+                Prioridad DatosPrioridad = new Prioridad();
+                ColaPrioridad Cola = new ColaPrioridad();
                 for (int i = 0; i < 3; i++)
                 {
-
                     for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
                     {
                         paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                        ListaPacientes.InsertarFinal(nuevo);
+                        Prioridad Paciente = new Prioridad();
+                        Paciente.prioridad = nuevo.Prioridad;
+                        Paciente.Cui = nuevo.DPI_CUI.ToString();
+                        Cola.Insertar(Paciente);
                     }
                 }
+                for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                {
+                    OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
+                }
+                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
             }
             return View(ListaPacientes);
         }
@@ -238,9 +255,6 @@ namespace Proyecto_Estructuras.Controllers
                     {
                         OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
                     }
-
-                    // Obtener los datos del heap para insertarlos en la lista doble que se mostrará
-                    //LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
                 }
                 bool enfermedad;
 
@@ -280,9 +294,6 @@ namespace Proyecto_Estructuras.Controllers
                 // Se adjunta paciente a la lista doble
                 LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
 
-                //Se adjunta el paciente a la Lista doble
-                //ListaPacientes.InsertarFinal(PacienteAgregar);
-
                 //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
                 using (StreamWriter sw = new StreamWriter(FileName))
                 {
@@ -298,7 +309,7 @@ namespace Proyecto_Estructuras.Controllers
             ViewBag.Mensaje = "Datos inválidos, intente nuevamente";
             return View();
         }
-        
+
         //Busquedas -------------------------------------------------------------
         public IActionResult Buscar([FromServices] IHostingEnvironment HostEnvi)
         {
@@ -312,11 +323,29 @@ namespace Proyecto_Estructuras.Controllers
                 CSV.ReadHeader();
                 while (CSV.Read())
                 {
-                    var Paciente = CSV.GetRecord<ArbolAVL.PacienteArbol>();
-                    Singleton.Instance.ArbolPacientesNombres.InsertarNombres(Paciente);
-                    Singleton.Instance.ArbolPacientesApellidos.InsertarApellidos(Paciente);
-                    Singleton.Instance.ArbolPacientesDPI.InsertarValor(Paciente);
+                    var Paciente = CSV.GetRecord<paciente>();
+                    Singleton.Instance.TablaHashBuscarPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+
                 }
+                for (int i = 0; i < 3; i++)
+                {
+                    // Pasa datos de tabla hash a lista doble
+                    for (int j = 0; j < Singleton.Instance.TablaHashBuscarPacientes.HashTable[i].contador; j++)
+                    {
+                        paciente nuevo = Singleton.Instance.TablaHashBuscarPacientes.HashTable[i].ObtenerValor(j);
+                        ArbolAVL.PacienteArbol ValorIndice = new ArbolAVL.PacienteArbol();
+
+                        ValorIndice.Nombre = nuevo.Nombre;
+                        ValorIndice.Apellido = nuevo.Apellido;
+                        ValorIndice.DPI_CUI = nuevo.DPI_CUI;
+
+
+                        Singleton.Instance.ArbolPacientesNombres.InsertarNombres(ValorIndice, Singleton.Instance.ArbolPacientesNombres);
+                        Singleton.Instance.ArbolPacientesApellidos.InsertarApellidos(ValorIndice, Singleton.Instance.ArbolPacientesApellidos);
+                        Singleton.Instance.ArbolPacientesDPI.InsertarNombres(ValorIndice, Singleton.Instance.ArbolPacientesDPI);
+                    }
+                }
+
             }
             
             return View();
@@ -324,19 +353,27 @@ namespace Proyecto_Estructuras.Controllers
 
         public IActionResult BuscarNombre(string Nombre, [FromServices] IHostingEnvironment HostEnvi)
         {
-            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesNombres.Buscar(Nombre);
+            paciente Buscado = new paciente();
+            ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesNombres.RetornarValor(Singleton.Instance.ArbolPacientesNombres, Nombre, Singleton.Instance.ArbolPacientesNombres.Buscar);
+            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+
             return View("Buscar", Buscado);
         }
         public IActionResult BuscarApellido(string Apellido)
         {
-            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesApellidos.BuscarA(Apellido);
+            paciente Buscado = new paciente();
+            ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesApellidos.RetornarValor(Singleton.Instance.ArbolPacientesApellidos, Apellido, Singleton.Instance.ArbolPacientesApellidos.BuscarA);
+            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Apellido, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
             return View("Buscar", Buscado);
         }
         public IActionResult BuscarDPIoCUI(long DPI_CUI)
         {
-            ArbolAVL.PacienteArbol Buscado = Singleton.Instance.ArbolPacientesDPI.BuscarNumero(DPI_CUI);
+            paciente Buscado = new paciente();
+            ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesDPI.RetornarValor(Singleton.Instance.ArbolPacientesDPI, DPI_CUI.ToString(), Singleton.Instance.ArbolPacientesDPI.BuscarNumero);
+            Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, DPI_CUI.ToString(), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
             return View("Buscar", Buscado);
         }
+
         //-----------------------------------------------------------------------
 
 
@@ -702,14 +739,6 @@ namespace Proyecto_Estructuras.Controllers
                 infoPaciente = ObtenerValor(THash, valorPrioridad.valor.Cui, THash.Llave(valorPrioridad.valor.Cui.ToString()));
                 ListaDoble.InsertarFinal(infoPaciente);
             }
-
-            /*
-            while(Heap != null)
-            {
-                var Prioridad = Heap.Eliminar().valor;
-                var Paciente = ObtenerValor(THash, Prioridad.Cui, THash.Llave(Prioridad.Cui.ToString()));
-                ListaDoble.InsertarFinal(Paciente);
-            }*/
         }
 
         paciente ObtenerValor(THash<paciente> Hash, string dato, int llave)
