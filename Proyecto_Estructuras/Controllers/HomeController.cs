@@ -521,8 +521,72 @@ namespace Proyecto_Estructuras.Controllers
 
         // Permite guardar los datos de vacunación para el paciente 
         [HttpPost]
-        public IActionResult Vacunacion()
+        public IActionResult Vacunacion([FromServices] IHostingEnvironment HostEnvi, string Farmaco, int dosis)
         {
+            string cui = HttpContext.Session.GetString(HttpContext.Session.Id + "CuiCita");
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+
+            ListaDoble<Citas> ListaPacientespantalla = new ListaDoble<Citas>();
+            ListaDoble<Citas> ListaPacientes = new ListaDoble<Citas>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                THash<Citas> TablasHashPacientes = new THash<Citas>();
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<Citas>();
+                    TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                    {
+                        Citas nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
+                        if(nuevo.DPI_CUI.ToString() == cui)
+                        {
+                            nuevo.MarcaVacuna = Farmaco;
+                            nuevo.Dosis = dosis;
+                            ListaPacientespantalla.InsertarFinal(nuevo);
+                        }
+                        ListaPacientes.InsertarFinal(nuevo);
+                    }
+                }
+            }
+
+
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
+                for (int i = 0; i < ListaPacientes.contador; i++)
+                {
+                    Citas reorganizar = ListaPacientes.ObtenerValor(i);
+                    string Retornar = reorganizar.Nombre;
+                    Retornar += "," + reorganizar.Apellido;
+                    Retornar += "," + Convert.ToString(reorganizar.DPI_CUI);
+                    Retornar += "," + Convert.ToString(reorganizar.Edad);
+                    Retornar += "," + Convert.ToString(reorganizar.Prioridad);
+                    Retornar += "," + reorganizar.Fecha;
+                    Retornar += "," + reorganizar.Hora;
+                    if(Farmaco != null)
+                        Retornar += "," + reorganizar.MarcaVacuna;
+                    if (dosis != 0)
+                        Retornar += "," + reorganizar.Dosis;
+                    else
+                        Retornar += "," + 0;
+                    sw.WriteLine(Retornar);
+                }
+            }
+
+            return View(ListaPacientespantalla);
+        }
+        [HttpGet]
+        public IActionResult Vacunacion(string CUI)
+        {
+            HttpContext.Session.SetString(HttpContext.Session.Id + "CuiCita", CUI);
             return View();
         }
 
@@ -598,7 +662,7 @@ namespace Proyecto_Estructuras.Controllers
             //Volver a escribir el CSV para mantener guardad y actualizada la informacion
             using (StreamWriter sw = new StreamWriter(FileName))
             {
-                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,fecha,Hora,MarcaVacuna,Dosis");
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
                 for (int i = 0; i < ListaPacientes.contador; i++)
                 {
                     Citas reorganizar = ListaPacientes.ObtenerValor(i);
@@ -833,7 +897,7 @@ namespace Proyecto_Estructuras.Controllers
                 Directory.CreateDirectory($"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}");
                 using (StreamWriter sw = new StreamWriter(FileName))
                 {
-                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
+                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
                 }
             }
         }

@@ -109,7 +109,7 @@
                     @Html.DisplayFor(modelItem => item.Dosis)
                 </td>
                 <td>
-                    <a href="@Url.Action("Vacunacion","Home")">Actualizar</a>
+                    <a href="@Url.Action("Vacunacion","Home")?CUI=@item.DPI_CUI">Actualizar</a>
                 </td>
                 <td>
                     <a href="@Url.Action("Reagendar","Home")">Reagendar</a>
