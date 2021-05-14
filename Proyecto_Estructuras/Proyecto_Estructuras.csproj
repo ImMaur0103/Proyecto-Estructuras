@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\files\InformacionCentro\" />
-    <Folder Include="wwwroot\files\InformacionCentro\Fraijanes\" />
     <Folder Include="wwwroot\files\InformacionPacientes\" />
     <Folder Include="wwwroot\files\Entregables\" />
     <Folder Include="wwwroot\files\InformacionPacientes\Admin\" />

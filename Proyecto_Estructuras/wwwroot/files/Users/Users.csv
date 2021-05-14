@@ -1,5 +1,22 @@
-User,Password,Centro
-Admin,Admin123,Admin
-Zona 18,123,Zona 18
-SantaCatarina,54321,Santa Catarina Pinula
-FraijanesAmin,12345,Fraijanes
+User,Password,Centro,Departamento
+Admin,Admin123,Admin,
+Toto,12345,Totonicapan,Totonicapan
+Mazatenango,12345,Mazatenango,Suchitepequez
+Solola,12345,Solola,Solola
+Cuila,12345,Cuilapa,Santa Rosa
+San Mar,12345,San Marcos,San Marcos
+Antigua,12345,Antigua Guatemala,Sacatepequez
+Retalu,12345,Retaluleu,Retaluleu
+Santa Cruz,12345,Santa Cruz de Quiche,Quiche
+Flores,12345,Flores,Peten
+Jutiapa,12345,Jutiapa,Jutiapa
+Jala,12345,Jalapa,Jalapa
+PuertoB,12345,Puerto Barrios,Izabal
+Huehue,12345,Huehuetenango,Huehuetenango
+Escuintla,12345,Escuintla,Escuintla
+Guastatoya,12345,Guastatoya,El Progreso
+AdminChiquimula,12345,Chiquimula,Chiquimula
+Chimaltenango,12345,Chimaltenango,Chimaltenango
+Coban,12345,Coban,Alta Verapaz
+Salama,12345,Salama,Baja Verapaz
+Zona 10,12345,Zona 10,Guatemala
