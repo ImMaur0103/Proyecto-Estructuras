@@ -528,6 +528,8 @@ namespace Proyecto_Estructuras.Controllers
 
         public IActionResult Reagendar()
         {
+
+
             return View("Espera");
         }
 
@@ -617,7 +619,7 @@ namespace Proyecto_Estructuras.Controllers
 
             return View("Espera", ListaPacientes);
         }
-            public IActionResult Privacy()
+        public IActionResult Privacy()
         {
             return View();
         }
@@ -768,7 +770,6 @@ namespace Proyecto_Estructuras.Controllers
         paciente ObtenerValor(THash<paciente> Hash, string dato, int llave)
         {
             paciente valor = new paciente();
-            bool encontar = false;
             switch (llave)
             {
                 case 0:
