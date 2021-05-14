@@ -1,7 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@model paciente
+@model IEnumerable<Proyecto_Estructuras.Models.paciente>
 
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -100,73 +100,69 @@
     <center><h1 class="text-primary"> @ViewBag.Mensaje </h1></center>
     @if (Model != null)
     {
-        <table class="table" cellpadding="0" cellspacing="0">
-            <thead class="table-dark">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DPI_CUI)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Apellido)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Municipio_residencia)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Departamento)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Edad)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Prioridad)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Grupo)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Vacunado)
-                    </th>
-                </tr>
-            </thead>
-            @if (Model != null)
-            {
-
-                <tbody>
-                    <tr>
-                        <th>
-                            @Html.DisplayFor(model => model.DPI_CUI)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Nombre)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Apellido)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Municipio_residencia)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Departamento)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Edad)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Prioridad)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Grupo)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.Vacunado)
-                        </th>
-                    </tr>
-                </tbody>
-            }
-        </table>
+<table class="table" cellpadding="0" cellspacing="0">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DPI_CUI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Municipio_residencia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Departamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Edad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prioridad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Grupo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vacunado)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DPI_CUI)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Departamento)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Edad)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Prioridad)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Vacunado)
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>
     }
 </div>
