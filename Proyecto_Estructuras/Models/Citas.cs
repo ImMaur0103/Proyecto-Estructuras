@@ -12,6 +12,9 @@ namespace Proyecto_Estructuras.Models
         public long DPI_CUI { get; set; }
         public int Edad { get; set; }
         public int Prioridad { get; set; }
-        public string fecha { get; set; }
+        public string Fecha { get; set; }
+        public string Hora { get; set; }
+        public string MarcaVacuna { get; set; }
+        public int Dosis { get; set; }
     }
 }

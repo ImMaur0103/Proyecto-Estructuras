@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ArbolAVL
 {
+    // Firma del delegado
+    public delegate PacienteArbol BuscarCampo(string dato, ArbolAVL.Arbol<PacienteArbol> ArbolAvl);
+    
     public class Arbol<T>
     {
         ArbolAVL<T> ArbolAVL = new ArbolAVL<T>();
@@ -21,13 +24,13 @@ namespace ArbolAVL
         ~Arbol() { }
 
         // Insertar nodos en el árbol 
-        public void InsertarNombres(PacienteArbol valor)
+        public void InsertarNombres(PacienteArbol valor, ArbolAVL.Arbol<PacienteArbol> Arbol)
         {
             NodoAVL<T> NuevoNodo = new NodoAVL<T>();
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (Buscar(valor.Nombre) != null)
+            if (Buscar(valor.Nombre, Arbol) != null)
             {
                 raiz = InsertarNodoApellido(raiz, NuevoNodo);
                 contador++;
@@ -44,13 +47,13 @@ namespace ArbolAVL
             }
             contador++;
         }
-        public void InsertarApellidos(PacienteArbol valor)
+        public void InsertarApellidos(PacienteArbol valor, ArbolAVL.Arbol<PacienteArbol> Arbol)
         {
             NodoAVL<T> NuevoNodo = new NodoAVL<T>();
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (Buscar(valor.Nombre) != null)
+            if (Buscar(valor.Nombre, Arbol) != null)
             {
                 raiz = InsertarNodoNombre(raiz, NuevoNodo);
                 contador++;
@@ -204,13 +207,13 @@ namespace ArbolAVL
 
             return Raiz;
         }
-        public void InsertarValor(PacienteArbol valor)
+        public void InsertarValor(PacienteArbol valor, ArbolAVL.Arbol<PacienteArbol> Arbol)
         {
             NodoAVL<T> NuevoNodo = new NodoAVL<T>();
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (BuscarNumero(valor.DPI_CUI) != null)
+            if (BuscarNumero(valor.DPI_CUI.ToString(), Arbol/*valor.DPI_CUI*/) != null)
             {
                 return;
             }
@@ -225,6 +228,9 @@ namespace ArbolAVL
             }
             contador++;
         }
+
+
+
 
         private NodoAVL<T> InsertarNodoValor(NodoAVL<T> actual, NodoAVL<T> nuevo)
         {
@@ -301,9 +307,12 @@ namespace ArbolAVL
             if (valor1.CompareTo(valor2) > 0) return valor1;
             return valor2;
         }
-        public PacienteArbol BuscarNumero(long dpi)
+
+        //Métodos de búsqueda
+        public PacienteArbol BuscarNumero(string numero, ArbolAVL.Arbol<PacienteArbol> ArbolAvl)
         {
-            NodoAVL<T> recorrer = raiz;
+            long dpi = Convert.ToInt64(numero);
+            NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
             {
@@ -333,14 +342,15 @@ namespace ArbolAVL
             return recorrer.valor;
         }
 
-        public PacienteArbol Buscar(string nombre)
+        public PacienteArbol Buscar(string nombre, ArbolAVL.Arbol<PacienteArbol> ArbolAvl)
         {
-            NodoAVL<T> recorrer = raiz;
+            NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             nombre = nombre.ToLower();
+            nombre.Replace(" ", "");
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
             {
-                string valor = recorrer.valor.Nombre;
+                string valor = recorrer.valor.Nombre.Replace(" ","");
                 valor = valor.ToLower();
                 if (nombre == valor)
                 {
@@ -367,9 +377,9 @@ namespace ArbolAVL
             return recorrer.valor;
         }
 
-        public PacienteArbol BuscarA(string nombre)
+        public PacienteArbol BuscarA(string nombre, ArbolAVL.Arbol<PacienteArbol> ArbolAvl)
         {
-            NodoAVL<T> recorrer = raiz;
+            NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             nombre = nombre.ToLower();
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
@@ -400,6 +410,13 @@ namespace ArbolAVL
             }
             return recorrer.valor;
         }
+
+        // Método del delegado
+        public PacienteArbol RetornarValor(ArbolAVL.Arbol<PacienteArbol> ListaDatos, string dato, BuscarCampo CampoBusqueda)
+        {
+            return CampoBusqueda(dato, ListaDatos);
+        }
+
         public NodoAVL<T> DeleteNodo(NodoAVL<T> actual, NodoAVL<T> Borrar)
         {
             if (actual == null)
@@ -609,7 +626,6 @@ namespace ArbolAVL
         //Verifica el estado del índice, por lo que guarda los valores dentro de una lista tipo FARMACO
         public void Preorden(NodoAVL<PacienteArbol> raiz, ref ListaDobleEnlace.ListaDoble<PacienteArbol> ListaInventario)
         {
-            //ListaInventario = new ListaDoble<Farmaco>();
             if (raiz != null)
             {
                 ListaInventario.InsertarFinal(raiz.valor);

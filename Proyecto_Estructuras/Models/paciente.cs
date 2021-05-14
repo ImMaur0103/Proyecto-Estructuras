@@ -17,6 +17,5 @@ namespace Proyecto_Estructuras.Models
         public int Prioridad { get; set; }  // Se debe calcular, depende del grupo al que pertenece 
         public string Grupo { get; set; } // Depende de las opciones del drop down list 
         public string Enfermedad { get; set; } // Funciona para el radiobutton 
-
     }
 }
