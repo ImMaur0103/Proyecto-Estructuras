@@ -16,7 +16,7 @@ using CsvHelper;
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
-
+using System.Text;
 
 namespace Proyecto_Estructuras.Controllers
 {
@@ -772,6 +772,78 @@ namespace Proyecto_Estructuras.Controllers
             }
 
             return View("Espera", ListaPacientes);
+        }
+        
+        public FileResult Download([FromServices] IHostingEnvironment HostEnvi)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var filename = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            int vacunados = 0, Novacunados = 0;
+
+            ListaDoble<paciente> ListaPacientesNV = new ListaDoble<paciente>();
+            ListaDoble<paciente> ListaPacientesV = new ListaDoble<paciente>();
+            ColaPrioridad cola = new ColaPrioridad();
+            using (var lector = new StreamReader(filename))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                THash<Citas> TablasHashPacientes = new THash<Citas>();
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    if (Paciente.Vacunado)
+                    {
+                        ++vacunados;
+                        ListaPacientesV.InsertarFinal(Paciente);
+                    }
+                    else
+                    {
+                        ++Novacunados;
+                        ListaPacientesNV.InsertarFinal(Paciente);
+                    }
+                }
+            }
+
+            var FileName = $"{HostEnvi.WebRootPath}\\files\\Reporte.txt";
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Lista de espera:");
+                for (int i = 0; i < ListaPacientesNV.contador; i++)
+                {
+                    string nombre = ListaPacientesNV.ObtenerValor(i).Nombre + " " + ListaPacientesNV.ObtenerValor(i).Apellido;
+                    sw.WriteLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesNV.ObtenerValor(i).DPI_CUI.ToString());
+                }
+                sw.WriteLine("Lista de vacunados:");
+                for (int i = 0; i < ListaPacientesV.contador; i++)
+                {
+                    string nombre = ListaPacientesV.ObtenerValor(i).Nombre + ListaPacientesV.ObtenerValor(i).Apellido;
+                    sw.WriteLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesV.ObtenerValor(i).DPI_CUI.ToString());
+                }
+
+                sw.WriteLine("Porcentaje de vacunados");
+                sw.WriteLine((vacunados * 100 / (vacunados + Novacunados)).ToString() + "%");
+            }
+
+            var builder = new StringBuilder();
+            builder.AppendLine("Lista de espera:");
+            for (int i = 0; i < ListaPacientesNV.contador; i++)
+            {
+                string nombre = ListaPacientesNV.ObtenerValor(i).Nombre + " " + ListaPacientesNV.ObtenerValor(i).Apellido;
+                builder.AppendLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesNV.ObtenerValor(i).DPI_CUI.ToString());
+            }
+            builder.AppendLine("Lista de vacunados:");
+            for (int i = 0; i < ListaPacientesV.contador; i++)
+            {
+                string nombre = ListaPacientesV.ObtenerValor(i).Nombre + ListaPacientesV.ObtenerValor(i).Apellido;
+                builder.AppendLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesV.ObtenerValor(i).DPI_CUI.ToString());
+            }
+
+            builder.AppendLine("Porcentaje de vacunados");
+            builder.AppendLine((vacunados * 100 / (vacunados + Novacunados)).ToString() + "%");
+
+            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csplain", "EstadoIndice.txt");
         }
         public IActionResult Privacy()
         {
