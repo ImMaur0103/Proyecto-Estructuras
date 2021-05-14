@@ -572,13 +572,11 @@ namespace Proyecto_Estructuras.Controllers
                     Retornar += "," + reorganizar.Fecha;
                     Retornar += "," + reorganizar.Hora;
                     Retornar += "," + reorganizar.MarcaVacuna;
-                    if (dosis != reorganizar.Dosis)
-                        Retornar += "," + reorganizar.Dosis;
-                    else
-                        Retornar += "," + 0;
+                    Retornar += "," + reorganizar.Dosis;
                     sw.WriteLine(Retornar);
                 }
             }
+            GuardarInfoCitas(HostEnvi);
 
             return View(ListaPacientespantalla);
         }
