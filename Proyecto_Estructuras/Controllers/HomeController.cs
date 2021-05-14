@@ -188,7 +188,6 @@ namespace Proyecto_Estructuras.Controllers
                     TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
                 }
 
-
                 Prioridad DatosPrioridad = new Prioridad();
                 ColaPrioridad Cola = new ColaPrioridad();
                 for (int i = 0; i < 3; i++)
@@ -258,6 +257,7 @@ namespace Proyecto_Estructuras.Controllers
                     {
                         OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
                     }
+
                 }
                 bool enfermedad;
 
@@ -1144,6 +1144,7 @@ namespace Proyecto_Estructuras.Controllers
         // método que asigna el horario de la cita de los pacientes según la prioridad
         void CrearCita(ListaDoble<paciente> ListaPacientes, [FromServices] IHostingEnvironment HostEnvi)
         {
+            Singleton.Instance.ListadoCitas.Vaciar();
             int contador = 0;
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
@@ -1181,8 +1182,22 @@ namespace Proyecto_Estructuras.Controllers
                 Singleton.Instance.ListadoCitas.InsertarFinal(cita);
             }
 
+            ListaDoble<Citas> Vaciar = new ListaDoble<Citas>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    // Guarda la info. de las citas por prioridad dentro de una lista
+                    var Cita = CSV.GetRecord<Citas>();
+                    Vaciar.InsertarFinal(Cita);
+                }
+            }
+
             // Insertar método para insertar la info de la lista en el csv
-            using(StreamWriter sw = new StreamWriter(FileName))
+            using (StreamWriter sw = new StreamWriter(FileName))
             {
                 sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
                 for (int i = 0; i < Singleton.Instance.ListadoCitas.contador; i++)
