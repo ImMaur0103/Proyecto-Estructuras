@@ -924,6 +924,8 @@ namespace Proyecto_Estructuras.Controllers
                 cita.DPI_CUI = Paciente.DPI_CUI;
                 cita.Edad = Paciente.Edad;
                 cita.Prioridad = Paciente.Prioridad;
+                cita.MarcaVacuna = "No Disponible";
+                cita.Dosis = 0;
 
                 // aumenta 15 minutos a la hora
                 if (contador == 3)
@@ -943,7 +945,7 @@ namespace Proyecto_Estructuras.Controllers
             // Insertar método para insertar la info de la lista en el csv
             using(StreamWriter sw = new StreamWriter(FileName))
             {
-                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
                 for (int i = 0; i < Singleton.Instance.ListadoCitas.contador; i++)
                 {
                     Citas valor = Singleton.Instance.ListadoCitas.ObtenerValor(i);
@@ -955,6 +957,8 @@ namespace Proyecto_Estructuras.Controllers
                     Retornar += "," + valor.Prioridad;
                     Retornar += "," + valor.Fecha;
                     Retornar += "," + valor.Hora;
+                    Retornar += "," + valor.MarcaVacuna;
+                    Retornar += "," + valor.Dosis;
 
                     sw.WriteLine(Retornar);
                 }
