@@ -206,7 +206,7 @@ namespace Arbol
         private Nodo<T> InsertarHeap(Nodo<T> Padre, Nodo<T> Nuevo)
         {
             int buscando = Nuevo.indice;
-            if (Padre.derecha != null)
+            if (Padre.derecha != null || Padre.indice == Nuevo.indice)
             {
                 if(buscando == Padre.indice)
                 {
@@ -214,7 +214,8 @@ namespace Arbol
                     aux.valor = Padre.valor;
                     aux.indice = Padre.indice + 1;
                     Padre.valor = Nuevo.valor;
-                    Padre = InsertarHeap(Padre, aux);
+                    InsertarHeap(raiz, aux);
+                    return Padre;
                 }
                 while (buscando > Padre.izquierda.indice && buscando > Padre.derecha.indice)
                 {
