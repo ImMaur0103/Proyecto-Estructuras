@@ -590,7 +590,6 @@ namespace Proyecto_Estructuras.Controllers
         public IActionResult Reagendar()
         {
 
-
             return View("Espera");
         }
 
