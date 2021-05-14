@@ -1,4 +1,5 @@
-﻿@*
+﻿@model Proyecto_Estructuras.Models.paciente
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
@@ -55,13 +56,100 @@
         <label for="floatingInput">Edad</label>
         <input type="tel" class="form-control" name="Edad" placeholder="Edad">
     </div>
-    <div class="form-floating">
-        <label for="floatingInput">Prioridad</label>
-        <input type="tel" class="form-control" name="Prioridad" placeholder="Prioridad">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Fecha</label>
-        <input type="tel" class="form-control" name="fecha" placeholder="Fecha">
+    @{
+        var listado = new List<SelectListItem>()
+{
+            new SelectListItem()
+            {
+                Text = "Médico, atiende pacientes con COVID-19",
+                Value = "1"
+            },
+            new SelectListItem()
+            {
+                Text = "Médico",
+                Value = "2"
+            },
+            new SelectListItem()
+            {
+                Text = "Estudiante ciencias de la salud",
+                Value = "3"
+            },
+            new SelectListItem()
+            {
+                Text = "Cuerpos de Socorro",
+                Value = "4"
+            },
+            new SelectListItem()
+            {
+                Text = "Personas internadas en asilos",
+                Value = "5"
+            },
+            new SelectListItem()
+            {
+                Text = "Administrativos (sector salud)",
+                Value = "6"
+            },
+            new SelectListItem()
+            {
+                Text = "Docente",
+                Value = "7"
+            },
+            new SelectListItem()
+            {
+                Text = "Policía",
+                Value = "8"
+            },
+            new SelectListItem()
+            {
+                Text = "Militar",
+                Value = "9"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector seguridad nacional",
+                Value = "10"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector municipal",
+                Value = "11"
+            },
+            new SelectListItem()
+            {
+                Text = "Eggsa",
+                Value = "12"
+            },
+            new SelectListItem()
+            {
+                Text = "Empagua",
+                Value = "13"
+            },
+            new SelectListItem()
+            {
+                Text = "Ministerio de educación",
+                Value = "14"
+            },
+            new SelectListItem()
+            {
+                Text = "Sector Justicia",
+                Value = "15"
+            },
+            new SelectListItem()
+            {
+                Text = "Otro",
+                Value = "16"
+            },
+        };
+    }
+    <p></p>
+    <label>Grupo al que pertenece:</label>
+    @Html.DropDownList("Grupo", listado)
+    <p></p>
+
+    <label>¿Padece alguna enfermedad crónica?:</label>
+    <div class="form-group">
+        @Html.RadioButtonFor(model => model.Enfermedad, "Sí", new { @checked = "true" }) Sí
+        @Html.RadioButtonFor(model => model.Enfermedad, "No") No
     </div>
     <div>
         <center><button type="submit" class="Boton">Agregar</button></center>
