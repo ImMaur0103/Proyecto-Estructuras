@@ -298,7 +298,7 @@ namespace Proyecto_Estructuras.Controllers
                 LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
 
                 // Crear cita al paciente y guardar dentro del csv cita
-                CrearCita(ListaPacientes);
+                CrearCita(ListaPacientes, HostEnvi);
 
                 //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
                 using (StreamWriter sw = new StreamWriter(FileName))
@@ -839,8 +839,12 @@ namespace Proyecto_Estructuras.Controllers
         }
 
         // método que asigna el horario de la cita de los pacientes según la prioridad
-        void CrearCita(ListaDoble<paciente> ListaPacientes)
+        void CrearCita(ListaDoble<paciente> ListaPacientes, [FromServices] IHostingEnvironment HostEnvi)
         {
+            int contador = 0;
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+
             DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
             TimeSpan duracion = new TimeSpan(0, 15, 0);
 
@@ -856,38 +860,42 @@ namespace Proyecto_Estructuras.Controllers
                 cita.DPI_CUI = Paciente.DPI_CUI;
                 cita.Edad = Paciente.Edad;
                 cita.Prioridad = Paciente.Prioridad;
-                
-                // insertar método para establecer FyH 
-                if(i == 0)
-                {
-                    cita.Fecha = fecha.ToShortDateString();
-                    cita.Hora = fecha.ToShortTimeString();
-                }
-                else
+
+                // aumenta 15 minutos a la hora
+                if (contador == 3)
                 {
                     DateTime aux = fecha.Add(duracion);
-                    fecha = aux; 
-                    cita.Fecha = fecha.ToShortDateString();
-                    cita.Hora = fecha.ToShortTimeString();
+                    fecha = aux;
+                    contador = 0;
                 }
+                cita.Fecha = fecha.ToShortDateString();
+                cita.Hora = fecha.ToShortTimeString();
+                contador++;
 
                 // Se inserta la cita dentro de la lista que se mostrará en la vista 
                 Singleton.Instance.ListadoCitas.InsertarFinal(cita);
+            }
 
-                // Insertar método para insertar la info de la lista en el csv
+            // Insertar método para insertar la info de la lista en el csv
+            using(StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
+                for (int i = 0; i < Singleton.Instance.ListadoCitas.contador; i++)
+                {
+                    Citas valor = Singleton.Instance.ListadoCitas.ObtenerValor(i);
+                    
+                    string Retornar = valor.Nombre;
+                    Retornar += "," + valor.Apellido;
+                    Retornar += "," + Convert.ToString(valor.DPI_CUI);
+                    Retornar += "," + valor.Edad;
+                    Retornar += "," + valor.Prioridad;
+                    Retornar += "," + valor.Fecha;
+                    Retornar += "," + valor.Hora;
+
+                    sw.WriteLine(Retornar);
+                }
             }
         }
-        
-        void EstablecerFyH(Citas cita)
-        {
-            
-            DateTime fecha = new DateTime(2021, 05, 14, 8, 0, 0);
-            TimeSpan Hora = new TimeSpan(0, 15, 0);
-
-            //if(fecha )
-        }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
