@@ -571,9 +571,8 @@ namespace Proyecto_Estructuras.Controllers
                     Retornar += "," + Convert.ToString(reorganizar.Prioridad);
                     Retornar += "," + reorganizar.Fecha;
                     Retornar += "," + reorganizar.Hora;
-                    if(Farmaco != null)
-                        Retornar += "," + reorganizar.MarcaVacuna;
-                    if (dosis != 0)
+                    Retornar += "," + reorganizar.MarcaVacuna;
+                    if (dosis != reorganizar.Dosis)
                         Retornar += "," + reorganizar.Dosis;
                     else
                         Retornar += "," + 0;
