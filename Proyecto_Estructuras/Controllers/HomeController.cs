@@ -63,6 +63,7 @@ namespace Proyecto_Estructuras.Controllers
                         if(Usuario.Password == Login.Password && Login.User == Usuario.User)
                         {
                             HttpContext.Session.SetString((HttpContext.Session.Id + "Centro"), Usuario.Centro);
+                            HttpContext.Session.SetString((HttpContext.Session.Id + "Departamento"), Usuario.Departamento);
                             GuardarInfoCitas(HostEnvi);
                             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
                             var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
@@ -217,8 +218,7 @@ namespace Proyecto_Estructuras.Controllers
         }
 
         [HttpPost]
-        public IActionResult Registrar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Departamento, string Municipio_residencia,
-            int Edad, bool Vacunado, string Grupo, paciente model)
+        public IActionResult Registrar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Departamento, string Municipio_residencia, int Edad, bool Vacunado, string Grupo, paciente model)
         {
             THash<paciente> TablasHashPacientes = new THash<paciente>();
             if (Nombre != null && Apellido != null &&  ValidarCui(DPI_CUI) && Departamento != 0 && Municipio_residencia != null && Edad > 17)
@@ -538,12 +538,20 @@ namespace Proyecto_Estructuras.Controllers
         }
 
         [HttpPost]
-        public IActionResult Agendar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Edad, int Prioridad, string fecha)
+        public IActionResult Agendar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Edad, string Grupo, paciente model)
         {
+            string fecha = "";
+            bool enfermedad;
+            if (model.Enfermedad == "Sí")
+                enfermedad = true;
+            else
+                enfermedad = false;
+            int Prioridad = DefinirPrioridad(Convert.ToInt32(Grupo), Edad, enfermedad);
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
 
             ListaDoble<Citas> ListaPacientes = new ListaDoble<Citas>();
+            ColaPrioridad cola = new ColaPrioridad();
             using (var lector = new StreamReader(FileName))
             using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
             {
@@ -556,18 +564,24 @@ namespace Proyecto_Estructuras.Controllers
                     TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
                 }
 
-
-
                 for (int i = 0; i < 3; i++)
                 {
-
                     for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
                     {
                         Citas nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
                         ListaPacientes.InsertarFinal(nuevo);
+                        Prioridad NuevoenCola = new Prioridad();
+                        NuevoenCola.prioridad = nuevo.Prioridad;
+                        NuevoenCola.Cui = nuevo.DPI_CUI.ToString();
+                        cola.Insertar(NuevoenCola);
                     }
                 }
             }
+            for (int i = 0; i < cola.ObtenerCola().contador; i++)
+            {
+
+            }
+            fecha = DateTime.Now.AddDays(31).ToShortDateString();
             //Agregado Datos del paciente a un paciente nuevo recien creado
             Citas PacienteAgregar = new Citas();
             PacienteAgregar.Nombre = Nombre;
@@ -584,7 +598,7 @@ namespace Proyecto_Estructuras.Controllers
             //Volver a escribir el CSV para mantener guardad y actualizada la informacion
             using (StreamWriter sw = new StreamWriter(FileName))
             {
-                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,fecha");
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,fecha,Hora,MarcaVacuna,Dosis");
                 for (int i = 0; i < ListaPacientes.contador; i++)
                 {
                     Citas reorganizar = ListaPacientes.ObtenerValor(i);
@@ -595,11 +609,13 @@ namespace Proyecto_Estructuras.Controllers
                     Retornar += "," + Convert.ToString(reorganizar.Prioridad);
                     Retornar += "," + reorganizar.Fecha;
                     Retornar += "," + reorganizar.Hora;
+                    Retornar += ",";
+                    Retornar += ",";
                     sw.WriteLine(Retornar);
                 }
             }
 
-            return View("Agendar", ListaPacientes);
+            return View("Espera", ListaPacientes);
         }
             public IActionResult Privacy()
         {
