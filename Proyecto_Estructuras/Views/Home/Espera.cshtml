@@ -29,9 +29,6 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Espera">Lista de Espera</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Agendar">Agendar Cita</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
                 </li>
             </ul>
@@ -109,7 +106,7 @@
                     @Html.DisplayFor(modelItem => item.Dosis)
                 </td>
                 <td>
-                    <a href="@Url.Action("Vacunacion","Home")">Actualizar</a>
+                    <a href="@Url.Action("Vacunacion","Home")?CUI=@item.DPI_CUI">Actualizar</a>
                 </td>
                 <td>
                     <a href="@Url.Action("Reagendar","Home")">Reagendar</a>
