@@ -355,7 +355,7 @@ namespace Proyecto_Estructuras.Controllers
 
                         Singleton.Instance.ArbolPacientesNombres.InsertarNombres(ValorIndice, Singleton.Instance.ArbolPacientesNombres);
                         Singleton.Instance.ArbolPacientesApellidos.InsertarApellidos(ValorIndice, Singleton.Instance.ArbolPacientesApellidos);
-                        Singleton.Instance.ArbolPacientesDPI.InsertarNombres(ValorIndice, Singleton.Instance.ArbolPacientesDPI);
+                        Singleton.Instance.ArbolPacientesDPI.InsertarValor(ValorIndice, Singleton.Instance.ArbolPacientesDPI);
                     }
                 }
             }
@@ -364,12 +364,12 @@ namespace Proyecto_Estructuras.Controllers
 
         public IActionResult BuscarNombre(string Nombre, [FromServices] IHostingEnvironment HostEnvi)
         {
-            paciente Buscado = new paciente();
+            ListaDoble<paciente> ListaPaciente = new ListaDoble<paciente>();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesNombres.RetornarValor(Singleton.Instance.ArbolPacientesNombres, Nombre, Singleton.Instance.ArbolPacientesNombres.Buscar);
             if(info != null)
             {
-                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre.ToLower().Replace(" ", ""), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
-                return View("Buscar", Buscado);
+                ListaPaciente = ObtenerValores(Singleton.Instance.TablaHashBuscarPacientes, Nombre.ToLower().Replace(" ", ""), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                return View("Buscar", ListaPaciente);
             }
             else
             {
@@ -380,12 +380,12 @@ namespace Proyecto_Estructuras.Controllers
         }
         public IActionResult BuscarApellido(string Apellido)
         {
-            paciente Buscado = new paciente();
+            ListaDoble<paciente> ListaPaciente = new ListaDoble<paciente>();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesApellidos.RetornarValor(Singleton.Instance.ArbolPacientesApellidos, Apellido.ToLower().Replace(" ", ""), Singleton.Instance.ArbolPacientesApellidos.BuscarA);
             if(info != null)
             {
-                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Apellido, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
-                return View("Buscar", Buscado);
+                ListaPaciente = ObtenerValores(Singleton.Instance.TablaHashBuscarPacientes, Apellido.ToLower().Replace(" ", ""), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                return View("Buscar", ListaPaciente);
             }
             else
             {
@@ -395,12 +395,14 @@ namespace Proyecto_Estructuras.Controllers
         }
         public IActionResult BuscarDPIoCUI(long DPI_CUI)
         {
+            ListaDoble<paciente> ListaPaciente = new ListaDoble<paciente>();
             paciente Buscado = new paciente();
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesDPI.RetornarValor(Singleton.Instance.ArbolPacientesDPI, DPI_CUI.ToString(), Singleton.Instance.ArbolPacientesDPI.BuscarNumero);
             if(info != null)
             {
                 Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, DPI_CUI.ToString(), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
-                return View("Buscar", Buscado);
+                ListaPaciente.InsertarFinal(Buscado);
+                return View("Buscar", ListaPaciente);
             }
             else
             {
@@ -960,6 +962,82 @@ namespace Proyecto_Estructuras.Controllers
             return null;
         }
 
+        ListaDoble<paciente> ObtenerValores(THash<paciente> Hash, string dato, int llave)
+        {
+            paciente valor = new paciente();
+            ListaDoble<paciente> Lista = new ListaDoble<paciente>();
+            switch (llave)
+            {
+                case 0:
+                    for (int i = 0; i < Hash.HashTable[0].contador; i++)
+                    {
+                        valor = Hash.HashTable[0].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    for (int i = 0; i < Hash.HashTable[1].contador; i++)
+                    {
+                        valor = Hash.HashTable[1].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    for (int i = 0; i < Hash.HashTable[2].contador; i++)
+                    {
+                        valor = Hash.HashTable[2].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    return Lista;
+                    break;
+                case 1:
+                    for (int i = 0; i < Hash.HashTable[0].contador; i++)
+                    {
+                        valor = Hash.HashTable[0].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    for (int i = 0; i < Hash.HashTable[1].contador; i++)
+                    {
+                        valor = Hash.HashTable[1].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    for (int i = 0; i < Hash.HashTable[2].contador; i++)
+                    {
+                        valor = Hash.HashTable[2].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    return Lista;
+                    break;
+                case 2:
+                    for (int i = 0; i < Hash.HashTable[2].contador; i++)
+                    {
+                        valor = Hash.HashTable[2].ObtenerValor(i);
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
+                        {
+                            Lista.InsertarFinal(valor);
+                        }
+                    }
+                    return Lista;
+                    break;
+                default:
+                    break;
+            }
+            return null;
+        }
         void GuardarInfoCitas([FromServices] IHostingEnvironment HostEnvi)
         {
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");

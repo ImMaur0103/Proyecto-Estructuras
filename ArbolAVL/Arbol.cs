@@ -53,7 +53,7 @@ namespace ArbolAVL
             NuevoNodo.valor = valor;
             NuevoNodo.izquierda = null;
             NuevoNodo.derecha = null;
-            if (Buscar(valor.Nombre, Arbol) != null)
+            if (Buscar(valor.Apellido, Arbol) != null)
             {
                 raiz = InsertarNodoNombre(raiz, NuevoNodo);
                 contador++;
@@ -120,7 +120,58 @@ namespace ArbolAVL
             }
             else
             {
-                return null;
+                if (nuevo.valor.DPI_CUI < actual.valor.DPI_CUI)
+                {
+                    if (actual.izquierda == null)
+                    {
+                        actual.izquierda = nuevo;
+                    }
+                    else
+                    {
+                        actual.izquierda = InsertarNodoValor(actual.izquierda, nuevo);
+                        if ((ArbolAVL.CalcFe(actual.izquierda) - ArbolAVL.CalcFe(actual.derecha)) == 2)
+                        {
+                            if (nuevo.valor.Nombre.CompareTo(actual.izquierda.valor.Nombre) < 0)
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RotarIzquierda(actual);
+                            }
+                            else
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RDobleIzquierda(actual);
+                            }
+                        }
+                    }
+                }
+                else if (nuevo.valor.DPI_CUI > actual.valor.DPI_CUI)
+                {
+                    if (actual.derecha == null)
+                    {
+                        actual.derecha = nuevo;
+                    }
+                    else
+                    {
+                        actual.derecha = InsertarNodoValor(actual.derecha, nuevo);
+                        if ((ArbolAVL.CalcFe(actual.derecha) - ArbolAVL.CalcFe(actual.izquierda)) == 2)
+                        {
+                            if (nuevo.valor.Nombre.CompareTo(actual.derecha.valor.Nombre) > 0)
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RotarDerecha(actual);
+                            }
+                            else
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RDobleDerecha(actual);
+                            }
+                        }
+                    }
+                }
             }
 
             if ((actual.izquierda == null) && (actual.derecha != null))
@@ -189,7 +240,58 @@ namespace ArbolAVL
             }
             else
             {
-                return null;
+                if (nuevo.valor.DPI_CUI < actual.valor.DPI_CUI)
+                {
+                    if (actual.izquierda == null)
+                    {
+                        actual.izquierda = nuevo;
+                    }
+                    else
+                    {
+                        actual.izquierda = InsertarNodoValor(actual.izquierda, nuevo);
+                        if ((ArbolAVL.CalcFe(actual.izquierda) - ArbolAVL.CalcFe(actual.derecha)) == 2)
+                        {
+                            if (nuevo.valor.Nombre.CompareTo(actual.izquierda.valor.Nombre) < 0)
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RotarIzquierda(actual);
+                            }
+                            else
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RDobleIzquierda(actual);
+                            }
+                        }
+                    }
+                }
+                else if (nuevo.valor.DPI_CUI > actual.valor.DPI_CUI)
+                {
+                    if (actual.derecha == null)
+                    {
+                        actual.derecha = nuevo;
+                    }
+                    else
+                    {
+                        actual.derecha = InsertarNodoValor(actual.derecha, nuevo);
+                        if ((ArbolAVL.CalcFe(actual.derecha) - ArbolAVL.CalcFe(actual.izquierda)) == 2)
+                        {
+                            if (nuevo.valor.Nombre.CompareTo(actual.derecha.valor.Nombre) > 0)
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RotarDerecha(actual);
+                            }
+                            else
+                            {
+                                if (actual.derecha != null)
+                                    if (actual.izquierda != null)
+                                        Raiz = ArbolAVL.RDobleDerecha(actual);
+                            }
+                        }
+                    }
+                }
             }
 
             if ((actual.izquierda == null) && (actual.derecha != null))
@@ -249,11 +351,15 @@ namespace ArbolAVL
                     {
                         if (nuevo.valor.Nombre.CompareTo(actual.izquierda.valor.Nombre) < 0)
                         {
-                            Raiz = ArbolAVL.RotarIzquierda(actual);
+                            if (actual.derecha != null)
+                                if (actual.izquierda != null)
+                                    Raiz = ArbolAVL.RotarIzquierda(actual);
                         }
                         else
                         {
-                            Raiz = ArbolAVL.RDobleIzquierda(actual);
+                            if (actual.derecha != null)
+                                if (actual.izquierda != null)
+                                    Raiz = ArbolAVL.RDobleIzquierda(actual);
                         }
                     }
                 }
@@ -271,11 +377,15 @@ namespace ArbolAVL
                     {
                         if (nuevo.valor.Nombre.CompareTo(actual.derecha.valor.Nombre) > 0)
                         {
-                            Raiz = ArbolAVL.RotarDerecha(actual);
+                            if (actual.derecha != null)
+                                if (actual.izquierda != null)
+                                    Raiz = ArbolAVL.RotarDerecha(actual);
                         }
                         else
                         {
-                            Raiz = ArbolAVL.RDobleDerecha(actual);
+                            if (actual.derecha != null)
+                                if (actual.izquierda != null)
+                                    Raiz = ArbolAVL.RDobleDerecha(actual);
                         }
                     }
                 }
