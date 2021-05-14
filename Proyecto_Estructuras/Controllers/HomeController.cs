@@ -557,7 +557,6 @@ namespace Proyecto_Estructuras.Controllers
                 }
             }
 
-
             using (StreamWriter sw = new StreamWriter(FileName))
             {
                 sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
@@ -587,10 +586,103 @@ namespace Proyecto_Estructuras.Controllers
             return View();
         }
 
-        public IActionResult Reagendar()
+        [HttpGet]
+        public IActionResult Reagendar([FromServices] IHostingEnvironment HostEnvi, string CUI)
         {
 
-            return View("Espera");
+            HttpContext.Session.SetString(HttpContext.Session.Id + "CuiCita", CUI);
+            ListaDoble<Citas> ListaEspera = new ListaDoble<Citas>();
+            ListaDoble<Citas> ListaNueva = new ListaDoble<Citas>();
+            string cui = HttpContext.Session.GetString(HttpContext.Session.Id + "CuiCita");
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<Citas>();
+                    ListaEspera.InsertarFinal(Paciente);
+                }
+
+                int index = 0;
+                for (int i = 0; i < ListaEspera.contador; i++)
+                {
+                    Citas dato = ListaEspera.ObtenerValor(i);
+                    if (dato.DPI_CUI.ToString() == cui)
+                    {
+                        index = i;
+                    }
+                }
+
+                Citas valor = new Citas();
+                ListaDoble<Citas> ListaModificar = new ListaDoble<Citas>();
+
+                //se obtienen los valores que no se van a modificar
+                for (int i = 0; i < index; i++)
+                {
+                    Citas dato = ListaEspera.ObtenerValor(i);
+                    ListaNueva.InsertarFinal(dato);
+                }
+
+                // Se obtienen los valores que se van a modificar
+                for (int i = index; i < ListaEspera.contador; i++)
+                {
+                    valor = ListaEspera.ObtenerValor(i);
+                    ListaModificar.InsertarFinal(valor);
+                }
+
+                int contador = 0;
+                DateTime fecha = DateTime.ParseExact(ListaModificar.ObtenerValor(0).Fecha + " "+ListaModificar.ObtenerValor(0).Hora, "dd/MM/yyyy hh:mm", null);
+                TimeSpan duracion = new TimeSpan(0, 15, 0);
+                fecha = fecha.Add(duracion);
+
+                for (int i = 0; i < ListaModificar.contador; i++)
+                {
+                    Citas cita = ListaModificar.ObtenerValor(i);
+                    if (contador == 3)
+                    {
+                        DateTime aux = fecha.Add(duracion);
+                        fecha = aux;
+                        contador = 0;
+                    }
+                    cita.Fecha = fecha.ToShortDateString();
+                    cita.Hora = fecha.ToShortTimeString();
+                    contador++;
+
+                    //ListaModificar.InsertarEnPosicion(cita, i);
+                    ListaNueva.InsertarFinal(cita);
+                }
+            }
+
+            Singleton.Instance.ListadoCitas.Vaciar();
+            Singleton.Instance.ListadoCitas = ListaNueva;
+
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
+                for (int i = 0; i < Singleton.Instance.ListadoCitas.contador; i++)
+                {
+                    Citas valor = Singleton.Instance.ListadoCitas.ObtenerValor(i);
+
+                    string Retornar = valor.Nombre;
+                    Retornar += "," + valor.Apellido;
+                    Retornar += "," + Convert.ToString(valor.DPI_CUI);
+                    Retornar += "," + valor.Edad;
+                    Retornar += "," + valor.Prioridad;
+                    Retornar += "," + valor.Fecha;
+                    Retornar += "," + valor.Hora;
+                    Retornar += "," + valor.MarcaVacuna;
+                    Retornar += "," + valor.Dosis;
+
+                    sw.WriteLine(Retornar);
+                }
+            }
+
+            return View("Espera", Singleton.Instance.ListadoCitas);
         }
 
         [HttpGet]
