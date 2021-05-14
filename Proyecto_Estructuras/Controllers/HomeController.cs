@@ -16,7 +16,7 @@ using CsvHelper;
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
-
+using System.Text;
 
 namespace Proyecto_Estructuras.Controllers
 {
@@ -826,7 +826,24 @@ namespace Proyecto_Estructuras.Controllers
                 sw.WriteLine((vacunados * 100 / (vacunados + Novacunados)).ToString() + "%");
             }
 
-            return File(FileName, "text/plain", "Reporte.txt");
+            var builder = new StringBuilder();
+            builder.AppendLine("Lista de espera:");
+            for (int i = 0; i < ListaPacientesNV.contador; i++)
+            {
+                string nombre = ListaPacientesNV.ObtenerValor(i).Nombre + " " + ListaPacientesNV.ObtenerValor(i).Apellido;
+                builder.AppendLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesNV.ObtenerValor(i).DPI_CUI.ToString());
+            }
+            builder.AppendLine("Lista de vacunados:");
+            for (int i = 0; i < ListaPacientesV.contador; i++)
+            {
+                string nombre = ListaPacientesV.ObtenerValor(i).Nombre + ListaPacientesV.ObtenerValor(i).Apellido;
+                builder.AppendLine("-" + i.ToString() + " Nombre: " + nombre + " DPI/CUI: " + ListaPacientesV.ObtenerValor(i).DPI_CUI.ToString());
+            }
+
+            builder.AppendLine("Porcentaje de vacunados");
+            builder.AppendLine((vacunados * 100 / (vacunados + Novacunados)).ToString() + "%");
+
+            return File(Encoding.UTF8.GetBytes(builder.ToString()), "text/csplain", "EstadoIndice.txt");
         }
         public IActionResult Privacy()
         {
