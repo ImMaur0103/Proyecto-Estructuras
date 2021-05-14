@@ -311,6 +311,7 @@ namespace ArbolAVL
         //Métodos de búsqueda
         public PacienteArbol BuscarNumero(string numero, ArbolAVL.Arbol<PacienteArbol> ArbolAvl)
         {
+            numero.Replace(" ", "");
             long dpi = Convert.ToInt64(numero);
             NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             bool encontrar = false;
@@ -381,10 +382,11 @@ namespace ArbolAVL
         {
             NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             nombre = nombre.ToLower();
+            nombre.Replace(" ", "");
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
             {
-                string valor = recorrer.valor.Apellido;
+                string valor = recorrer.valor.Apellido.Replace(" ", "");
                 valor = valor.ToLower();
                 if (nombre == valor)
                 {

@@ -293,11 +293,11 @@ namespace Proyecto_Estructuras.Controllers
                 ColaHeap.Insertar(paciete);
                 OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad, ColaHeap.Buscar(paciete) + 1);
 
-                // Crear cita al paciente
-
-
                 // Se adjunta paciente a la lista doble
                 LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
+
+                // Crear cita al paciente y guardar dentro del csv cita
+                CrearCita(ListaPacientes);
 
                 //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
                 using (StreamWriter sw = new StreamWriter(FileName))
@@ -318,6 +318,13 @@ namespace Proyecto_Estructuras.Controllers
         //Busquedas -------------------------------------------------------------
         public IActionResult Buscar([FromServices] IHostingEnvironment HostEnvi)
         {
+            Singleton.Instance.TablaHashBuscarPacientes.Lista0.Vaciar();
+            Singleton.Instance.TablaHashBuscarPacientes.Lista1.Vaciar();
+            Singleton.Instance.TablaHashBuscarPacientes.Lista2.Vaciar();
+            Singleton.Instance.ArbolPacientesNombres.Delete();
+            Singleton.Instance.ArbolPacientesApellidos.Delete();
+            Singleton.Instance.ArbolPacientesDPI.Delete();
+
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
 
@@ -350,9 +357,7 @@ namespace Proyecto_Estructuras.Controllers
                         Singleton.Instance.ArbolPacientesDPI.InsertarNombres(ValorIndice, Singleton.Instance.ArbolPacientesDPI);
                     }
                 }
-
             }
-            
             return View();
         }
 
@@ -384,7 +389,7 @@ namespace Proyecto_Estructuras.Controllers
             else
             {
                 ViewBag.Mensaje = "Paciente no encontrado";
-                return View();
+                return View("Buscar");
             }
         }
         public IActionResult BuscarDPIoCUI(long DPI_CUI)
@@ -399,7 +404,7 @@ namespace Proyecto_Estructuras.Controllers
             else
             {
                 ViewBag.Mensaje = "Paciente no encontrado";
-                return View();
+                return View("Buscar");
             }
         }
 
@@ -508,48 +513,9 @@ namespace Proyecto_Estructuras.Controllers
         }
 
         // Muestra la cola de prioridad, se podrá elegir la opción de vacunado o reagendar cita
-        public IActionResult Espera([FromServices] IHostingEnvironment HostEnvi)
+        public IActionResult Espera()
         {
-            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
-            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
-
-            FileInfo Myfile = new FileInfo(FileName);
-            if (Myfile.Exists)
-            {
-                THash<Citas> TablasHashPacientes = new THash<Citas>();
-                using (var lector = new StreamReader(FileName))
-                using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
-                {
-                    CSV.Read();
-                    CSV.ReadHeader();
-                    while (CSV.Read())
-                    {
-                        var Cita = CSV.GetRecord<Citas>();
-                        TablasHashPacientes.Insertar(Cita, Cita.DPI_CUI.ToString());
-                    }
-                }
-
-                ListaDoble<Citas> ListaPacientes = new ListaDoble<Citas>();
-                for (int i = 0; i < 3; i++)
-                {
-
-                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
-                    {
-                        Citas nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                        ListaPacientes.InsertarFinal(nuevo);
-                    }
-                }
-                return View("Espera", ListaPacientes);
-            }
-            else
-            {
-                Directory.CreateDirectory($"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}");
-                using (StreamWriter sw = new StreamWriter(FileName))
-                {
-                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
-                }
-            }
-            return View("Registro");
+            return View("Espera", Singleton.Instance.ListadoCitas);
         }
 
         // Permite guardar los datos de vacunación para el paciente 
@@ -782,31 +748,6 @@ namespace Proyecto_Estructuras.Controllers
             }
         }
 
-        // Recibe la lista de prioridad de los pacientes y tabla hash donde se guardará la info. de las citas, asigna fecha y hora
-        void ProgramarCita(Arbol.Arbol<Prioridad> Heap, THash<Citas> InfoCitas)
-        {
-            ColaPrioridad Cola = new ColaPrioridad();
-            Arbol.Nodo<Prioridad> valorPrioridad = new Arbol.Nodo<Prioridad>();
-            ListaDoble<Prioridad> DatosPaciente = new ListaDoble<Prioridad>();
-            int hora = 8;
-            int minuto = 00;
-
-            // Ordena los pacientes según prioridad dentro de una lista
-            Cola.InsertarConArbol(Heap);
-            for (int i = 0; i < Cola.ObtenerCola().contador; i++)
-            {
-                valorPrioridad = Cola.ObtenerCola().ObtenerValor(i);
-                DatosPaciente.InsertarFinal(valorPrioridad.valor);
-            }
-
-            for (int i = 0; i < DatosPaciente.contador; i++)
-            {
-                // Se debe buscar el paciente dentro de la tabla hash 
-            }
-
-        }
-
-
         paciente ObtenerValor(THash<paciente> Hash, string dato, int llave)
         {
             paciente valor = new paciente();
@@ -817,7 +758,7 @@ namespace Proyecto_Estructuras.Controllers
                     for (int i = 0; i < Hash.HashTable[0].contador; i++)
                     {
                         valor = Hash.HashTable[0].ObtenerValor(i);
-                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ","") == dato || valor.Apellido.ToLower().Replace(" ","") == dato)
                         {
                             return valor;
                         }
@@ -827,7 +768,7 @@ namespace Proyecto_Estructuras.Controllers
                     for (int i = 0; i < Hash.HashTable[1].contador; i++)
                     {
                         valor = Hash.HashTable[1].ObtenerValor(i);
-                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ","") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
                         {
                             return valor;
                         }
@@ -837,7 +778,7 @@ namespace Proyecto_Estructuras.Controllers
                     for (int i = 0; i < Hash.HashTable[2].contador; i++)
                     {
                         valor = Hash.HashTable[2].ObtenerValor(i);
-                        if (valor.DPI_CUI.ToString() == dato || valor.Nombre == dato || valor.Apellido == dato)
+                        if (valor.DPI_CUI.ToString().ToLower().Replace(" ", "") == dato || valor.Nombre.ToLower().Replace(" ", "") == dato || valor.Apellido.ToLower().Replace(" ", "") == dato)
                         {
                             return valor;
                         }
@@ -880,7 +821,57 @@ namespace Proyecto_Estructuras.Controllers
             }
         }
 
+        // método que asigna el horario de la cita de los pacientes según la prioridad
+        void CrearCita(ListaDoble<paciente> ListaPacientes)
+        {
+            DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
+            TimeSpan duracion = new TimeSpan(0, 15, 0);
+
+            // Se obtiene la información de cada paciente por orden de prioridad y se agrega a la lista de espera en singleton y en csv 
+            for (int i = 0; i < ListaPacientes.contador; i++)
+            {
+                paciente Paciente = new paciente();
+                Citas cita = new Citas();
+
+                Paciente = ListaPacientes.ObtenerValor(i);
+                cita.Nombre = Paciente.Nombre;
+                cita.Apellido = Paciente.Apellido;
+                cita.DPI_CUI = Paciente.DPI_CUI;
+                cita.Edad = Paciente.Edad;
+                cita.Prioridad = Paciente.Prioridad;
+                
+                // insertar método para establecer FyH 
+                if(i == 0)
+                {
+                    cita.Fecha = fecha.ToShortDateString();
+                    cita.Hora = fecha.ToShortTimeString();
+                }
+                else
+                {
+                    DateTime aux = fecha.Add(duracion);
+                    fecha = aux; 
+                    cita.Fecha = fecha.ToShortDateString();
+                    cita.Hora = fecha.ToShortTimeString();
+                }
+
+                // Se inserta la cita dentro de la lista que se mostrará en la vista 
+                Singleton.Instance.ListadoCitas.InsertarFinal(cita);
+
+                // Insertar método para insertar la info de la lista en el csv
+            }
+        }
         
+        void EstablecerFyH(Citas cita)
+        {
+            
+            DateTime fecha = new DateTime(2021, 05, 14, 8, 0, 0);
+            TimeSpan Hora = new TimeSpan(0, 15, 0);
+
+            //if(fecha )
+        }
+
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
