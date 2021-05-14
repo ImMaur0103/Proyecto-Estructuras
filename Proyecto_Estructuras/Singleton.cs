@@ -17,6 +17,7 @@ namespace Proyecto_Estructuras
         public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesApellidos = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
         public ArbolAVL.Arbol<ArbolAVL.PacienteArbol> ArbolPacientesDPI = new ArbolAVL.Arbol<ArbolAVL.PacienteArbol>();
         public ListaDoble<long> ListCui = new ListaDoble<long>();
+        public ListaDoble<Citas> ListadoCitas = new ListaDoble<Citas>(); 
         public THash<paciente> TablaHashBuscarPacientes = new THash<paciente>();
 
         protected Singleton()

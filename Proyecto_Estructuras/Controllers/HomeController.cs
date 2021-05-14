@@ -27,6 +27,7 @@ namespace Proyecto_Estructuras.Controllers
         const string RutaUsuario = "\\files\\Users\\Users.csv";
         const string RutaCentros = "\\files\\InformacionCentro\\";
         const string RutaPacientes = "\\files\\InformacionPacientes\\";
+        const string ListasEspera = "\\files\\ListasEspera\\";
 
         private readonly ILogger<HomeController> _logger;
         public HomeController(ILogger<HomeController> logger)
@@ -62,6 +63,7 @@ namespace Proyecto_Estructuras.Controllers
                         if(Usuario.Password == Login.Password && Login.User == Usuario.User)
                         {
                             HttpContext.Session.SetString((HttpContext.Session.Id + "Centro"), Usuario.Centro);
+                            GuardarInfoCitas(HostEnvi);
                             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
                             var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
 
@@ -290,6 +292,9 @@ namespace Proyecto_Estructuras.Controllers
                 paciete.prioridad = PacienteAgregar.Prioridad;
                 ColaHeap.Insertar(paciete);
                 OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad, ColaHeap.Buscar(paciete) + 1);
+
+                // Crear cita al paciente
+
 
                 // Se adjunta paciente a la lista doble
                 LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
@@ -842,6 +847,37 @@ namespace Proyecto_Estructuras.Controllers
                     break;
             }
             return null;
+        }
+
+        void GuardarInfoCitas([FromServices] IHostingEnvironment HostEnvi)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+
+            FileInfo Myfile = new FileInfo(FileName);
+            if (Myfile.Exists)
+            {
+                using (var lector = new StreamReader(FileName))
+                using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+                {
+                    CSV.Read();
+                    CSV.ReadHeader();
+                    while (CSV.Read())
+                    {
+                        // Guarda la info. de las citas por prioridad dentro de una lista
+                        var Cita = CSV.GetRecord<Citas>();
+                        Singleton.Instance.ListadoCitas.InsertarFinal(Cita);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory($"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}");
+                using (StreamWriter sw = new StreamWriter(FileName))
+                {
+                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora");
+                }
+            }
         }
 
         
