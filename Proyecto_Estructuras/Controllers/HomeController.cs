@@ -127,7 +127,7 @@ namespace Proyecto_Estructuras.Controllers
             return View();
         }
         [HttpPost]//Se quiere agregar un mensaje para cuando no se puede agregar un usuario
-        public IActionResult CreateNewUser(string User, string Password, string Centro, string AUser, string APassword, [FromServices] IHostingEnvironment HostEnvi) 
+        public IActionResult CreateNewUser(string User, string Password, string Centro, string AUser, string APassword, String Departamento, [FromServices] IHostingEnvironment HostEnvi) 
         {
             if(User != null && Password != null && Centro != null && AUser != null && APassword != null)
             {
@@ -147,6 +147,7 @@ namespace Proyecto_Estructuras.Controllers
                         if (Usuario.Password == AdminAutentication.Password && AdminAutentication.User == Usuario.User)
                         {
                             Usuarios NewUser = new Usuarios();
+                            NewUser.Departamento = Departamento;
                             NewUser.Centro = Centro;
                             NewUser.User = User;
                             NewUser.Password = Password;
@@ -157,10 +158,10 @@ namespace Proyecto_Estructuras.Controllers
                 }
                 using (StreamWriter sw = new StreamWriter(fileName))
                 {
-                    sw.WriteLine("User,Password,Centro");
+                    sw.WriteLine("User,Password,Centro,Departamento");
                     foreach (Usuarios Usuario in ListaUsuarios)
                     {
-                        sw.WriteLine(Usuario.User + "," + Usuario.Password + "," + Usuario.Centro);
+                        sw.WriteLine(Usuario.User + "," + Usuario.Password + "," + Usuario.Centro + ","  + Usuario.Departamento);
                     }
                 }
                 return View("Index");

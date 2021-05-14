@@ -145,7 +145,7 @@ body {
     border-radius:7px;
     background-color: #000000;
     width: 30%;
-    height: 40%;
+    height: auto;
 }
 .ColumnasUser {
     flex: 100%;

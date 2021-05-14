@@ -37,7 +37,7 @@ namespace Arbol
                 {
                     Cola.InsertarFinal(nodo);
                 }
-                for (int i = 0; i < NodosEnArbol; i++)
+                for (int i = 0; i < Cola.contador; i++)
                 {
                     Cola.ObtenerValor(i).indice = i;
                 }
@@ -45,6 +45,10 @@ namespace Arbol
             else
             {
                 Cola.InsertarFinal(nodo);
+                for (int i = 0; i < Cola.contador; i++)
+                {
+                    Cola.ObtenerValor(i).indice = i;
+                }
             }
         }
 
