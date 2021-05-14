@@ -347,7 +347,7 @@ namespace ArbolAVL
         {
             NodoAVL<PacienteArbol> recorrer = ArbolAvl.raiz;
             nombre = nombre.ToLower();
-            nombre.Replace(" ", "");
+            nombre = nombre.Replace(" ", "");
             bool encontrar = false;
             while (recorrer != null && encontrar == false)
             {

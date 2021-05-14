@@ -368,7 +368,7 @@ namespace Proyecto_Estructuras.Controllers
             ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesNombres.RetornarValor(Singleton.Instance.ArbolPacientesNombres, Nombre, Singleton.Instance.ArbolPacientesNombres.Buscar);
             if(info != null)
             {
-                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
+                Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Nombre.ToLower().Replace(" ", ""), Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
                 return View("Buscar", Buscado);
             }
             else
@@ -381,7 +381,7 @@ namespace Proyecto_Estructuras.Controllers
         public IActionResult BuscarApellido(string Apellido)
         {
             paciente Buscado = new paciente();
-            ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesApellidos.RetornarValor(Singleton.Instance.ArbolPacientesApellidos, Apellido, Singleton.Instance.ArbolPacientesApellidos.BuscarA);
+            ArbolAVL.PacienteArbol info = Singleton.Instance.ArbolPacientesApellidos.RetornarValor(Singleton.Instance.ArbolPacientesApellidos, Apellido.ToLower().Replace(" ", ""), Singleton.Instance.ArbolPacientesApellidos.BuscarA);
             if(info != null)
             {
                 Buscado = ObtenerValor(Singleton.Instance.TablaHashBuscarPacientes, Apellido, Singleton.Instance.TablaHashBuscarPacientes.Llave(info.DPI_CUI.ToString()));
