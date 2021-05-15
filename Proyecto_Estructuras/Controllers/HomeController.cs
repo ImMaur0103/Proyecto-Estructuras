@@ -516,9 +516,9 @@ namespace Proyecto_Estructuras.Controllers
         }
 
         // Muestra la cola de prioridad, se podrá elegir la opción de vacunado o reagendar cita
-        public IActionResult Espera()
+        public IActionResult Espera([FromServices] IHostingEnvironment HostEnvi)
         {
-            return View("Espera", Singleton.Instance.ListadoCitas);
+            return View(Singleton.Instance.ListadoCitas);
         }
 
         // Permite guardar los datos de vacunación para el paciente 
@@ -591,7 +591,6 @@ namespace Proyecto_Estructuras.Controllers
         [HttpGet]
         public IActionResult Reagendar([FromServices] IHostingEnvironment HostEnvi, string CUI)
         {
-
             HttpContext.Session.SetString(HttpContext.Session.Id + "CuiCita", CUI);
             ListaDoble<Citas> ListaEspera = new ListaDoble<Citas>();
             ListaDoble<Citas> ListaNueva = new ListaDoble<Citas>();
@@ -639,13 +638,13 @@ namespace Proyecto_Estructuras.Controllers
 
                 int contador = 0;
                 DateTime fecha = DateTime.ParseExact(ListaModificar.ObtenerValor(0).Fecha + " "+ListaModificar.ObtenerValor(0).Hora, "dd/MM/yyyy hh:mm", null);
-                TimeSpan duracion = new TimeSpan(0, 15, 0);
+                TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
                 fecha = fecha.Add(duracion);
 
                 for (int i = 0; i < ListaModificar.contador; i++)
                 {
                     Citas cita = ListaModificar.ObtenerValor(i);
-                    if (contador == 3)
+                    if (contador == Singleton.Instance.Cantidad)
                     {
                         DateTime aux = fecha.Add(duracion);
                         fecha = aux;
@@ -685,6 +684,28 @@ namespace Proyecto_Estructuras.Controllers
             }
 
             return View("Espera", Singleton.Instance.ListadoCitas);
+        }
+
+        public IActionResult Configuracion()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Configuracion(string Cantidad, string Duracion, [FromServices] IHostingEnvironment HostEnvi)
+        {
+            Singleton.Instance.Cantidad = Convert.ToInt32(Cantidad);
+            if(Convert.ToInt32(Duracion) <= 60)
+            {
+                Singleton.Instance.Duracion = Convert.ToInt32(Duracion);
+                Actualizar(HostEnvi);
+                return View("Espera");
+            }
+            else
+            {
+                ViewBag.Mensaje = "Tiempo inválido";
+                return View();
+            }
         }
 
         [HttpGet]
@@ -1150,7 +1171,7 @@ namespace Proyecto_Estructuras.Controllers
             var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
 
             DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
-            TimeSpan duracion = new TimeSpan(0, 15, 0);
+            TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
 
             // Se obtiene la información de cada paciente por orden de prioridad y se agrega a la lista de espera en singleton y en csv 
             for (int i = 0; i < ListaPacientes.contador; i++)
@@ -1168,7 +1189,7 @@ namespace Proyecto_Estructuras.Controllers
                 cita.Dosis = 0;
 
                 // aumenta 15 minutos a la hora
-                if (contador == 3)
+                if (contador == Singleton.Instance.Cantidad)
                 {
                     DateTime aux = fecha.Add(duracion);
                     fecha = aux;
@@ -1204,6 +1225,75 @@ namespace Proyecto_Estructuras.Controllers
                 {
                     Citas valor = Singleton.Instance.ListadoCitas.ObtenerValor(i);
                     
+                    string Retornar = valor.Nombre;
+                    Retornar += "," + valor.Apellido;
+                    Retornar += "," + Convert.ToString(valor.DPI_CUI);
+                    Retornar += "," + valor.Edad;
+                    Retornar += "," + valor.Prioridad;
+                    Retornar += "," + valor.Fecha;
+                    Retornar += "," + valor.Hora;
+                    Retornar += "," + valor.MarcaVacuna;
+                    Retornar += "," + valor.Dosis;
+
+                    sw.WriteLine(Retornar);
+                }
+            }
+        }
+
+        void Actualizar([FromServices] IHostingEnvironment HostEnvi)
+        {
+            Singleton.Instance.ListadoCitas.Vaciar();
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+
+            ListaDoble<Citas> aux = new ListaDoble<Citas>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    // Guarda la info. de las citas por prioridad dentro de una lista
+                    var Cita = CSV.GetRecord<Citas>();
+                    //Singleton.Instance.ListadoCitas.InsertarFinal(Cita);
+                    aux.InsertarFinal(Cita);
+                }
+            }
+
+            // Se actualiza la hora de cada uno de los pacientes
+            int contador = 0;
+            DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
+            TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
+
+            for (int i = 0; i < aux.contador; i++)
+            {
+                Citas cita = new Citas();
+                cita = aux.ObtenerValor(i);
+
+                // aumenta 15 minutos a la hora
+                if (contador == Singleton.Instance.Cantidad)
+                {
+                    DateTime fechaaux = fecha.Add(duracion);
+                    fecha = fechaaux;
+                    contador = 0;
+                }
+
+                cita.Fecha = fecha.ToShortDateString();
+                cita.Hora = fecha.ToShortTimeString();
+                contador++;
+
+                // Se inserta la cita dentro de la lista que se mostrará en la vista 
+                Singleton.Instance.ListadoCitas.InsertarFinal(cita);
+            }
+
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis");
+                for (int i = 0; i < Singleton.Instance.ListadoCitas.contador; i++)
+                {
+                    Citas valor = Singleton.Instance.ListadoCitas.ObtenerValor(i);
+
                     string Retornar = valor.Nombre;
                     Retornar += "," + valor.Apellido;
                     Retornar += "," + Convert.ToString(valor.DPI_CUI);

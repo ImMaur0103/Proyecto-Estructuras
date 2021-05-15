@@ -2,19 +2,17 @@ Lista de espera:
 -0 Nombre: Marian lopez DPI/CUI: 1234567891234
 -1 Nombre: Laura  Juárez DPI/CUI: 9863745692817
 -2 Nombre: Fernanda Gomez DPI/CUI: 8394759182643
--3 Nombre: Monica Rivera DPI/CUI: 9876453719362
--4 Nombre: Mario Estrada  DPI/CUI: 1234567890123
--5 Nombre: Karla  Portillo DPI/CUI: 1948674274610
--6 Nombre: Carlos Martínez DPI/CUI: 3847591347581
--7 Nombre: Melisa Hernández DPI/CUI: 1938472630199
--8 Nombre: Sofia Blanco DPI/CUI: 1938477274634
--9 Nombre: Luis Pérez DPI/CUI: 1290345876142
--10 Nombre: Maria Pérez DPI/CUI: 2983746102839
--11 Nombre: José Cortés DPI/CUI: 1938471625391
--12 Nombre: Ricardo Mendez DPI/CUI: 1938725638172
--13 Nombre: Mauricio Alejandro lopez DPI/CUI: 3994745280113
--14 Nombre: Andres Galvez DPI/CUI: 3016382930101
--15 Nombre: Lilian Ortega DPI/CUI: 9173628371625
+-3 Nombre: Andrea Escobar DPI/CUI: 1938471028391
+-4 Nombre: Monica Rivera DPI/CUI: 9876453719362
+-5 Nombre: Mario Estrada  DPI/CUI: 1234567890123
+-6 Nombre: Karla  Portillo DPI/CUI: 1948674274610
+-7 Nombre: Noemi Velasquez DPI/CUI: 1928371627391
+-8 Nombre: Carlos Martínez DPI/CUI: 3847591347581
+-9 Nombre: Lucía Gomez DPI/CUI: 1928381762881
+-10 Nombre: Victor Avila DPI/CUI: 1928374910283
+-11 Nombre: Melisa Hernandez DPI/CUI: 5799765412345
+-12 Nombre: Cristian Franco DPI/CUI: 1928374910293
+-13 Nombre: Rodrigo Cuevas DPI/CUI: 1298371927381
 Lista de vacunados:
 Porcentaje de vacunados
 0%

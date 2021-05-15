@@ -19,6 +19,8 @@ namespace Proyecto_Estructuras
         public ListaDoble<long> ListCui = new ListaDoble<long>();
         public ListaDoble<Citas> ListadoCitas = new ListaDoble<Citas>(); 
         public THash<paciente> TablaHashBuscarPacientes = new THash<paciente>();
+        public int Duracion = 15;
+        public int Cantidad = 3;
 
         protected Singleton()
         {
