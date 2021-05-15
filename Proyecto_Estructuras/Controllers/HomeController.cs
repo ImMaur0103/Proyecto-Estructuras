@@ -35,7 +35,6 @@ namespace Proyecto_Estructuras.Controllers
             _logger = logger;
         }
 
-
         //-----------------------------Controladores Views--------------------------------------
         [HttpGet]
         public IActionResult Index()
@@ -338,7 +337,6 @@ namespace Proyecto_Estructuras.Controllers
                 {
                     var Paciente = CSV.GetRecord<paciente>();
                     Singleton.Instance.TablaHashBuscarPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
-
                 }
                 for (int i = 0; i < 3; i++)
                 {
@@ -553,6 +551,9 @@ namespace Proyecto_Estructuras.Controllers
                             nuevo.MarcaVacuna = Farmaco;
                             nuevo.Dosis = dosis;
                             ListaPacientespantalla.InsertarFinal(nuevo);
+
+                            // Actualizar el estado del paciente a vacunado
+                            ActEstadoPaciente(nuevo.DPI_CUI.ToString(), HostEnvi);
                         }
                         ListaPacientes.InsertarFinal(nuevo);
                     }
@@ -1308,6 +1309,50 @@ namespace Proyecto_Estructuras.Controllers
                 }
             }
         }
+
+        void ActEstadoPaciente(string cui, [FromServices] IHostingEnvironment HostEnvi)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                THash<paciente> TablasHashPacientes = new THash<paciente>();
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    //Lee el csv de pacientes y lo guarda dentro de la tabla hash
+                    var Paciente = CSV.GetRecord<paciente>();
+                    TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                    {
+                        paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
+                        if (nuevo.DPI_CUI.ToString() == cui)
+                        {
+                            nuevo.Vacunado = true;
+                        }
+                        ListaPacientes.InsertarFinal(nuevo);
+                    }
+                }
+            }
+            // Actualizar la información en el csv
+            using (StreamWriter sw = new StreamWriter(FileName))
+            {
+                sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad,Grupo,Enfermedad");
+                for (int i = 0; i < ListaPacientes.contador; i++)
+                {
+                    sw.WriteLine(JuntarString(ListaPacientes.ObtenerValor(i)));
+                }
+            }
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
