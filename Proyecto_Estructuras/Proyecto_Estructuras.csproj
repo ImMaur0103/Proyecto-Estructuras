@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\files\InformacionCentro\Fraijanes\**" />
+    <Compile Remove="wwwroot\files\ListasEspera\**" />
+    <Content Remove="wwwroot\files\InformacionCentro\Fraijanes\**" />
+    <Content Remove="wwwroot\files\ListasEspera\**" />
+    <EmbeddedResource Remove="wwwroot\files\InformacionCentro\Fraijanes\**" />
+    <EmbeddedResource Remove="wwwroot\files\ListasEspera\**" />
+    <None Remove="wwwroot\files\InformacionCentro\Fraijanes\**" />
+    <None Remove="wwwroot\files\ListasEspera\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
@@ -20,11 +31,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\files\InformacionCentro\" />
     <Folder Include="wwwroot\files\InformacionCentro\Admin\" />
-    <Folder Include="wwwroot\files\InformacionCentro\Fraijanes\" />
+    <Folder Include="wwwroot\files\InformacionCentro\Zona10\" />
     <Folder Include="wwwroot\files\InformacionPacientes\" />
     <Folder Include="wwwroot\files\Entregables\" />
     <Folder Include="wwwroot\files\InformacionPacientes\Admin\" />
-    <Folder Include="wwwroot\files\ListasEspera\" />
     <Folder Include="wwwroot\files\Users\" />
   </ItemGroup>
 

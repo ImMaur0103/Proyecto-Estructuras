@@ -95,7 +95,10 @@ namespace Proyecto_Estructuras.Controllers
                                         Prioridad Paciente = new Prioridad();
                                         Paciente.prioridad = nuevo.Prioridad;
                                         Paciente.Cui = nuevo.DPI_CUI.ToString();
-                                        Cola.Insertar(Paciente);
+                                        if (!nuevo.Vacunado)
+                                        {
+                                            Cola.Insertar(Paciente);
+                                        }
                                     }
                                 }
                                 for (int i = 0; i < Cola.ObtenerCola().contador; i++)
@@ -171,6 +174,7 @@ namespace Proyecto_Estructuras.Controllers
 
         public IActionResult Registro([FromServices] IHostingEnvironment HostEnvi)
         {
+            ViewBag.Completo = "false";
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
 
@@ -211,7 +215,46 @@ namespace Proyecto_Estructuras.Controllers
             }
             return View(ListaPacientes);
         }
+        public IActionResult RegistroExtendido([FromServices] IHostingEnvironment HostEnvi)
+        {
+            ViewBag.Completo = "true";
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
 
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                THash<paciente> TablasHashPacientes = new THash<paciente>();
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                }
+
+                Prioridad DatosPrioridad = new Prioridad();
+                ColaPrioridad Cola = new ColaPrioridad();
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                    {
+                        paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
+                        Prioridad Paciente = new Prioridad();
+                        Paciente.prioridad = nuevo.Prioridad;
+                        Paciente.Cui = nuevo.DPI_CUI.ToString();
+                        Cola.Insertar(Paciente);
+                    }
+                }
+                for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                {
+                    OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
+                }
+                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
+            }
+            return View("Registro",ListaPacientes);
+        }
         public IActionResult RegistroVacunado([FromServices] IHostingEnvironment HostEnvi)
         {
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
@@ -585,24 +628,20 @@ namespace Proyecto_Estructuras.Controllers
                 {
                     var Paciente = CSV.GetRecord<Citas>();
                     TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
-                }
-
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                    if (Paciente.DPI_CUI.ToString() == cui)
                     {
-                        Citas nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                        if(nuevo.DPI_CUI.ToString() == cui)
-                        {
-                            nuevo.MarcaVacuna = Farmaco;
-                            nuevo.Dosis = dosis;
-                            ListaPacientespantalla.InsertarFinal(nuevo);
+                        Paciente.MarcaVacuna = Farmaco;
+                        Paciente.Dosis = dosis;
+                        Paciente.Fecha = DateTime.Now.Day.ToString() + "/" + DateTime.Now.Month.ToString() + "/" + DateTime.Now.Year.ToString();
+                        Paciente.Hora = DateTime.Now.ToString("hh:mm tt");
+                        ListaPacientespantalla.InsertarInicio(Paciente);
+                        ListaPacientes.InsertarInicio(Paciente);
 
-                            // Actualizar el estado del paciente a vacunado
-                            ActEstadoPaciente(nuevo.DPI_CUI.ToString(), HostEnvi);
-                        }
-                        ListaPacientes.InsertarFinal(nuevo);
+                        // Actualizar el estado del paciente a vacunado
+                        ActEstadoPaciente(Paciente.DPI_CUI.ToString(), HostEnvi);
                     }
+                    else
+                        ListaPacientes.InsertarFinal(Paciente);
                 }
             }
 
@@ -624,7 +663,7 @@ namespace Proyecto_Estructuras.Controllers
                     sw.WriteLine(Retornar);
                 }
             }
-            Actualizar(HostEnvi);
+            Singleton.Instance.ListadoCitas = ListaPacientes;
 
             return View(ListaPacientespantalla);
         }
@@ -684,7 +723,7 @@ namespace Proyecto_Estructuras.Controllers
                 }
 
                 int contador = 0;
-                DateTime fecha = DateTime.ParseExact(ListaModificar.ObtenerValor(0).Fecha + " "+ListaModificar.ObtenerValor(0).Hora, "dd/MM/yyyy hh:mm", null);
+                DateTime fecha = DateTime.ParseExact(ListaModificar.ObtenerValor(0).Fecha + " "+ListaModificar.ObtenerValor(0).Hora, "dd/MM/yyyy hh:mm tt", null);
                 TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
                 fecha = fecha.Add(duracion);
 
@@ -1195,6 +1234,9 @@ namespace Proyecto_Estructuras.Controllers
                     {
                         // Guarda la info. de las citas por prioridad dentro de una lista
                         var Cita = CSV.GetRecord<Citas>();
+                        Prioridad Paciente = new Prioridad();
+                        Paciente.Cui = Cita.DPI_CUI.ToString();
+                        Paciente.prioridad = Cita.Prioridad;
                         Singleton.Instance.ListadoCitas.InsertarFinal(Cita);
                     }
                 }
@@ -1217,7 +1259,8 @@ namespace Proyecto_Estructuras.Controllers
             string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
             var FileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
 
-            DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
+            DateTime fecha = DateTime.Now.AddDays(1);
+            fecha = new DateTime(fecha.Year, fecha.Month, fecha.Day, 7, 0, 0);
             TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
 
             // Se obtiene la información de cada paciente por orden de prioridad y se agrega a la lista de espera en singleton y en csv 
@@ -1232,22 +1275,46 @@ namespace Proyecto_Estructuras.Controllers
                 cita.DPI_CUI = Paciente.DPI_CUI;
                 cita.Edad = Paciente.Edad;
                 cita.Prioridad = Paciente.Prioridad;
-                cita.MarcaVacuna = "No Disponible";
-                cita.Dosis = 0;
-
-                // aumenta 15 minutos a la hora
-                if (contador == Singleton.Instance.Cantidad)
+                if (!Paciente.Vacunado)
                 {
-                    DateTime aux = fecha.Add(duracion);
-                    fecha = aux;
-                    contador = 0;
-                }
-                cita.Fecha = fecha.ToShortDateString();
-                cita.Hora = fecha.ToShortTimeString();
-                contador++;
+                    cita.MarcaVacuna = "No Disponible";
+                    cita.Dosis = 0;
 
-                // Se inserta la cita dentro de la lista que se mostrará en la vista 
-                Singleton.Instance.ListadoCitas.InsertarFinal(cita);
+                    // aumenta 15 minutos a la hora
+                    if (contador == Singleton.Instance.Cantidad)
+                    {
+                        DateTime aux = fecha.Add(duracion);
+                        fecha = aux;
+                        contador = 0;
+                    }
+                    cita.Fecha = fecha.ToShortDateString();
+                    cita.Hora = fecha.ToShortTimeString();
+                    contador++;
+
+                    // Se inserta la cita dentro de la lista que se mostrará en la vista 
+                    Singleton.Instance.ListadoCitas.InsertarFinal(cita);
+                }
+                else
+                {
+                    var fileName = $"{HostEnvi.WebRootPath}{RutaCentros}{Regex.Replace(Centro, @"\s", "")}\\Cita.csv";
+                    using (var lector = new StreamReader(fileName))
+                    using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+                    {
+                        CSV.Read();
+                        CSV.ReadHeader();
+                        while (CSV.Read())
+                        {
+                            // Guarda la info. de las citas por prioridad dentro de una lista
+                            var Cita = CSV.GetRecord<Citas>();
+                            if(Cita.DPI_CUI == cita.DPI_CUI)
+                            {
+
+                                cita = Cita;
+                            }
+                        }
+                    }
+                    Singleton.Instance.ListadoCitas.InsertarInicio(cita);
+                }
             }
 
             ListaDoble<Citas> Vaciar = new ListaDoble<Citas>();
@@ -1310,7 +1377,8 @@ namespace Proyecto_Estructuras.Controllers
 
             // Se actualiza la hora de cada uno de los pacientes
             int contador = 0;
-            DateTime fecha = new DateTime(2021, 05, 14, 7, 0, 0);
+            DateTime fecha = DateTime.Now.AddDays(1);
+            fecha = new DateTime(fecha.Year, fecha.Month, fecha.Day, 7, 0, 0);
             TimeSpan duracion = new TimeSpan(0, Singleton.Instance.Duracion, 0);
 
             for (int i = 0; i < aux.contador; i++)
