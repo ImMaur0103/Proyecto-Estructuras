@@ -1,18 +1,6 @@
 Lista de espera:
--0 Nombre: Marian lopez DPI/CUI: 1234567891234
--1 Nombre: Laura  Juárez DPI/CUI: 9863745692817
--2 Nombre: Fernanda Gomez DPI/CUI: 8394759182643
--3 Nombre: Andrea Escobar DPI/CUI: 1938471028391
--4 Nombre: Monica Rivera DPI/CUI: 9876453719362
--5 Nombre: Mario Estrada  DPI/CUI: 1234567890123
--6 Nombre: Karla  Portillo DPI/CUI: 1948674274610
--7 Nombre: Noemi Velasquez DPI/CUI: 1928371627391
--8 Nombre: Carlos Martínez DPI/CUI: 3847591347581
--9 Nombre: Lucía Gomez DPI/CUI: 1928381762881
--10 Nombre: Victor Avila DPI/CUI: 1928374910283
--11 Nombre: Melisa Hernandez DPI/CUI: 5799765412345
--12 Nombre: Cristian Franco DPI/CUI: 1928374910293
--13 Nombre: Rodrigo Cuevas DPI/CUI: 1298371927381
+-0 Nombre: Marisela Monserratt DPI/CUI: 1094833782874
+-1 Nombre: Marian Alejandra lopez DPI/CUI: 8728737298398
 Lista de vacunados:
 Porcentaje de vacunados
 0%

@@ -1,0 +1,5 @@
+Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad,Grupo,Enfermedad
+Andrea,Blanco,4371820622589,Guatemala,Zona 10,21,False,3,13,No Aplica
+Marisela,Monserratt,1094833782874,Guatemala,Fraijanes,45,True,2,7,No Aplica
+Marian Alejandra,lopez,8728737298398,Guatemala,Santa catarina,30,False,4,16,No Aplica
+Mauricio Alejandro,lopez,3994745280113,Guatemala,Fraijanes,30,False,3,12,No Aplica

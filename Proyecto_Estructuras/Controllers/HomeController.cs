@@ -51,7 +51,7 @@ namespace Proyecto_Estructuras.Controllers
                 Login.User = User;
                 Login.Password = Password;
                 var fileName = $"{HostEnvi.WebRootPath}{RutaUsuario}";
-                using (var reader = new StreamReader(fileName))
+                using (var reader = new StreamReader(fileName, Encoding.UTF7))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Read();
@@ -197,7 +197,10 @@ namespace Proyecto_Estructuras.Controllers
                         Prioridad Paciente = new Prioridad();
                         Paciente.prioridad = nuevo.Prioridad;
                         Paciente.Cui = nuevo.DPI_CUI.ToString();
-                        Cola.Insertar(Paciente);
+                        if (!nuevo.Vacunado)
+                        {
+                            Cola.Insertar(Paciente);
+                        }
                     }
                 }
                 for (int i = 0; i < Cola.ObtenerCola().contador; i++)
@@ -209,6 +212,48 @@ namespace Proyecto_Estructuras.Controllers
             return View(ListaPacientes);
         }
 
+        public IActionResult RegistroVacunado([FromServices] IHostingEnvironment HostEnvi)
+        {
+            string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+            var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+            ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+            using (var lector = new StreamReader(FileName))
+            using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            {
+                THash<paciente> TablasHashPacientes = new THash<paciente>();
+                CSV.Read();
+                CSV.ReadHeader();
+                while (CSV.Read())
+                {
+                    var Paciente = CSV.GetRecord<paciente>();
+                    TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                }
+
+                Prioridad DatosPrioridad = new Prioridad();
+                ColaPrioridad Cola = new ColaPrioridad();
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                    {
+                        paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
+                        Prioridad Paciente = new Prioridad();
+                        Paciente.prioridad = nuevo.Prioridad;
+                        Paciente.Cui = nuevo.DPI_CUI.ToString();
+                        if (nuevo.Vacunado)
+                        {
+                            Cola.Insertar(Paciente);
+                        }
+                    }
+                }
+                for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                {
+                    OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
+                }
+                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
+            }
+            return View(ListaPacientes);
+        }
         [HttpGet]
         public IActionResult Registrar()
         {
@@ -217,9 +262,10 @@ namespace Proyecto_Estructuras.Controllers
 
         [HttpPost]
         public IActionResult Registrar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Departamento, string Municipio_residencia, int Edad, bool Vacunado, string Grupo, paciente model)
-        {
+        {//Edita esto para que no guarde el DPI si no es necesario
             THash<paciente> TablasHashPacientes = new THash<paciente>();
-            if (Nombre != null && Apellido != null &&  ValidarCui(DPI_CUI) && Departamento != 0 && Municipio_residencia != null && Edad > 17)
+            string DepartamentoActual = HttpContext.Session.GetString(HttpContext.Session.Id + "Departamento");
+            if (Nombre != null && Apellido != null &&  ValidarCui(DPI_CUI) && Departamento != 0 && Municipio_residencia != null && Edad > 17 && DefinirDept(Departamento) == DepartamentoActual)
             {
                 string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
                 var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
@@ -578,7 +624,7 @@ namespace Proyecto_Estructuras.Controllers
                     sw.WriteLine(Retornar);
                 }
             }
-            GuardarInfoCitas(HostEnvi);
+            Actualizar(HostEnvi);
 
             return View(ListaPacientespantalla);
         }

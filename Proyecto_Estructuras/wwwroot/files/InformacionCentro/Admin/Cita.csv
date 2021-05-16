@@ -1,16 +1,16 @@
 Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis
-Karla ,Portillo,1948674274610,23,3,14/05/2021,08:30,No Disponible,0
-Noemi,Velasquez,1928371627391,25,3,14/05/2021,08:30,No Disponible,0
-Andrea,Escobar,1938471028391,87,2,14/05/2021,07:30,No Disponible,0
-Marian,lopez,1234567891234,45,1,14/05/2021,07:30,No Disponible,0
-Laura ,Juárez,9863745692817,23,1,14/05/2021,07:00,No Disponible,0
-Fernanda,Gomez,8394759182643,34,1,14/05/2021,07:00,No Disponible,0
-Mariana,Toledo ,1039848172912,19,4,14/05/2021,10:30,No Disponible,0
-Lucía,Gomez,1928381762881,20,4,14/05/2021,09:30,No Disponible,0
-Rodrigo,Cuevas,1298371927381,19,4,14/05/2021,09:00,No Disponible,0
-Carlos,Martínez,3847591347581,43,3,14/05/2021,09:00,No Disponible,0
-Monica,Rivera,9876453719362,19,2,14/05/2021,08:00,Pfizer,1
-Victor,Avila,1928374910283,19,4,14/05/2021,10:00,No Disponible,0
-Melisa,Hernandez,5799765412345,20,4,14/05/2021,10:00,No Disponible,0
-Cristian,Franco,1928374910293,19,4,14/05/2021,09:30,No Disponible,0
-Mario,Estrada ,1234567890123,98,2,14/05/2021,08:00,No Disponible,0
+Karla ,Portillo,1948674274610,23,3,14/05/2021,07:00 a. m.,Rusa225,1
+Noemi,Velasquez,1928371627391,25,3,14/05/2021,07:00 a. m.,USA Corp,2
+Andrea,Escobar,1938471028391,87,2,14/05/2021,07:00 a. m.,No Disponible,0
+Marian,lopez,1234567891234,45,1,14/05/2021,07:15 a. m.,No Disponible,0
+Laura ,Juárez,9863745692817,23,1,14/05/2021,07:15 a. m.,No Disponible,0
+Fernanda,Gomez,8394759182643,34,1,14/05/2021,07:15 a. m.,Rusa225,2
+Mariana,Toledo ,1039848172912,19,4,14/05/2021,07:30 a. m.,No Disponible,0
+Lucía,Gomez,1928381762881,20,4,14/05/2021,07:30 a. m.,No Disponible,0
+Rodrigo,Cuevas,1298371927381,19,4,14/05/2021,07:30 a. m.,No Disponible,0
+Carlos,Martínez,3847591347581,43,3,14/05/2021,07:45 a. m.,No Disponible,0
+Monica,Rivera,9876453719362,19,2,14/05/2021,07:45 a. m.,Pfizer,1
+Victor,Avila,1928374910283,19,4,14/05/2021,07:45 a. m.,No Disponible,0
+Melisa,Hernandez,5799765412345,20,4,14/05/2021,08:00 a. m.,No Disponible,0
+Cristian,Franco,1928374910293,19,4,14/05/2021,08:00 a. m.,Rusa225,1
+Mario,Estrada ,1234567890123,98,2,14/05/2021,08:00 a. m.,No Disponible,0

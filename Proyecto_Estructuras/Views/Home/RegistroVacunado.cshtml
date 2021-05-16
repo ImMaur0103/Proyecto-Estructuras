@@ -1,8 +1,7 @@
-﻿
-@{
-    ViewData["Title"] = "Vacunacion";
-}
-@model IEnumerable<Proyecto_Estructuras.Models.Citas>
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto_Estructuras.Models.paciente>
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
@@ -44,38 +43,6 @@
         </div>
     </div>
 </nav>
-
-<form method="post" action="Vacunacion" class="Registrar">
-    <div class="form-floating mb-3">
-        <label for="floatingInput">Nombre del Farmaco</label>
-        <input type="text" class="form-control" name="Farmaco" placeholder="Nombre del Farmaco">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Dosis</label>
-        <input type="text" class="form-control" name="Dosis" placeholder="Dosis">
-    </div>
-    <div>
-        <center><button type="submit" class="Boton">Agregar</button></center>
-    </div>
-</form>
-
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
 <table class="table" cellpadding="0" cellspacing="0">
     <thead class="table-dark">
         <tr>
@@ -89,22 +56,16 @@
                 @Html.DisplayNameFor(model => model.Apellido)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Municipio_residencia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Departamento)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Edad)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Prioridad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fecha)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Hora)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MarcaVacuna)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dosis)
             </th>
         </tr>
     </thead>
@@ -124,25 +85,18 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Apellido)
                     </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Departamento)
+                    </td>
                     <th>
                         @Html.DisplayFor(modelItem => item.Edad)
                     </th>
                     <th>
-
                         @Html.DisplayFor(modelItem => item.Prioridad)
                     </th>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Fecha)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Hora)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MarcaVacuna)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Dosis)
-                    </td>
                 </tr>
             }
         </tbody>

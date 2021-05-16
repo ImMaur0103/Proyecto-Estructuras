@@ -16,6 +16,9 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registro">Registro</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegistroVacunado">Vacunados</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registrar">Registrar</a>
                     </li>
                     <li class="nav-item">
@@ -64,9 +67,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Prioridad)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Vacunado)
-                </th>
             </tr>
         </thead>
         @if (Model != null)
@@ -96,9 +96,6 @@
                     </th>
                     <th>
                         @Html.DisplayFor(modelItem => item.Prioridad)
-                    </th>
-                    <th>
-                        @Html.DisplayFor(modelItem => item.Vacunado)
                     </th>
                 </tr>
                 }
