@@ -22,6 +22,7 @@ namespace Proyecto_Estructuras
         public int Duracion = 15;
         public int Cantidad = 3;
 
+
         protected Singleton()
         {
 
