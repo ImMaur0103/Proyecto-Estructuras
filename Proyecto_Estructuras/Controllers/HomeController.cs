@@ -81,6 +81,7 @@ namespace Proyecto_Estructuras.Controllers
                                     {
                                         var Paciente = CSV.GetRecord<paciente>();
                                         TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                                        Singleton.Instance.ListCui.InsertarFinal(Convert.ToInt64(Paciente.DPI_CUI));
                                     }
                                 }
 
@@ -307,98 +308,100 @@ namespace Proyecto_Estructuras.Controllers
         public IActionResult Registrar([FromServices] IHostingEnvironment HostEnvi, string Nombre, string Apellido, long DPI_CUI, int Departamento, string Municipio_residencia, int Edad, bool Vacunado, string Grupo, paciente model)
         {//Edita esto para que no guarde el DPI si no es necesario
             THash<paciente> TablasHashPacientes = new THash<paciente>();
-            string DepartamentoActual = HttpContext.Session.GetString(HttpContext.Session.Id + "Departamento");
-            if (Nombre != null && Apellido != null &&  ValidarCui(DPI_CUI) && Departamento != 0 && Municipio_residencia != null && Edad > 17 && DefinirDept(Departamento) == DepartamentoActual)
-            {
-                string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
-                var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
-
-                ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
-                using (var lector = new StreamReader(FileName))
-                using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
+            string DepartamentoActual = HttpContext.Session.GetString(HttpContext.Session.Id + "Departamento"); 
+            if (Nombre != null && Apellido != null && Departamento != 0 && Municipio_residencia != null && Edad > 17) {
+                if (ValidarCui(DPI_CUI) && DefinirDept(Departamento) == DepartamentoActual)
                 {
-                    // Pasa del archivo csv a tabla hash
-                    CSV.Read();
-                    CSV.ReadHeader();
-                    while (CSV.Read())
+                    string Centro = HttpContext.Session.GetString(HttpContext.Session.Id + "Centro");
+                    var FileName = $"{HostEnvi.WebRootPath}{RutaPacientes}{Regex.Replace(Centro, @"\s", "")}\\Pacientes.csv";
+
+                    ListaDoble<paciente> ListaPacientes = new ListaDoble<paciente>();
+                    using (var lector = new StreamReader(FileName))
+                    using (var CSV = new CsvReader(lector, CultureInfo.InvariantCulture))
                     {
-                        var Paciente = CSV.GetRecord<paciente>();
-                        TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                        // Pasa del archivo csv a tabla hash
+                        CSV.Read();
+                        CSV.ReadHeader();
+                        while (CSV.Read())
+                        {
+                            var Paciente = CSV.GetRecord<paciente>();
+                            TablasHashPacientes.Insertar(Paciente, Paciente.DPI_CUI.ToString());
+                        }
+
+                        Prioridad DatosPrioridad = new Prioridad();
+                        ColaPrioridad Cola = new ColaPrioridad();
+                        for (int i = 0; i < 3; i++)
+                        {
+                            // Pasa datos de tabla hash a lista doble
+                            for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                            {
+                                paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
+                                Prioridad Paciente = new Prioridad();
+                                Paciente.prioridad = nuevo.Prioridad;
+                                Paciente.Cui = nuevo.DPI_CUI.ToString();
+                                Cola.Insertar(Paciente);
+                                Singleton.Instance.ListCui.InsertarInicio(nuevo.DPI_CUI);
+                            }
+                        }
+                        for (int i = 0; i < Cola.ObtenerCola().contador; i++)
+                        {
+                            OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
+                        }
+
+                    }
+                    bool enfermedad;
+
+                    //Agregado Datos del paciente a un paciente nuevo recien creado
+                    paciente PacienteAgregar = new paciente();
+                    PacienteAgregar.Nombre = Nombre;
+                    PacienteAgregar.Apellido = Apellido;
+                    PacienteAgregar.DPI_CUI = DPI_CUI;
+                    PacienteAgregar.Departamento = DefinirDept(Departamento);
+                    PacienteAgregar.Municipio_residencia = Municipio_residencia;
+                    PacienteAgregar.Edad = Edad;
+                    PacienteAgregar.Vacunado = Vacunado;
+                    PacienteAgregar.Grupo = Grupo;
+                    if (model.Enfermedad == "Sí")
+                    {
+                        enfermedad = true;
+                        PacienteAgregar.Enfermedad = "Aplica";
+                    }
+                    else
+                    {
+                        enfermedad = false;
+                        PacienteAgregar.Enfermedad = "No Aplica";
                     }
 
-                    Prioridad DatosPrioridad = new Prioridad();
-                    ColaPrioridad Cola = new ColaPrioridad();
-                    for (int i = 0; i < 3; i++)
+                    PacienteAgregar.Prioridad = DefinirPrioridad(Convert.ToInt32(Grupo), Edad, enfermedad);
+                    TablasHashPacientes.Insertar(PacienteAgregar, PacienteAgregar.DPI_CUI.ToString());
+
+                    // Ordenar según prioridad
+                    ColaPrioridad ColaHeap = new ColaPrioridad();
+                    ColaHeap.InsertarConArbol(Heap);
+                    Prioridad paciete = new Prioridad();
+                    paciete.Cui = PacienteAgregar.DPI_CUI.ToString();
+                    paciete.prioridad = PacienteAgregar.Prioridad;
+                    ColaHeap.Insertar(paciete);
+                    OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad, ColaHeap.Buscar(paciete) + 1);
+
+                    // Se adjunta paciente a la lista doble
+                    LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
+
+                    // Crear cita al paciente y guardar dentro del csv cita
+                    CrearCita(ListaPacientes, HostEnvi);
+
+                    //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
+                    using (StreamWriter sw = new StreamWriter(FileName))
                     {
-                        // Pasa datos de tabla hash a lista doble
-                        for (int j = 0; j < TablasHashPacientes.HashTable[i].contador; j++)
+                        sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad,Grupo,Enfermedad");
+                        for (int i = 0; i < ListaPacientes.contador; i++)
                         {
-                            paciente nuevo = TablasHashPacientes.HashTable[i].ObtenerValor(j);
-                            Prioridad Paciente = new Prioridad();
-                            Paciente.prioridad = nuevo.Prioridad;
-                            Paciente.Cui = nuevo.DPI_CUI.ToString();
-                            Cola.Insertar(Paciente);
-                            Singleton.Instance.ListCui.InsertarInicio(nuevo.DPI_CUI);
+                            sw.WriteLine(JuntarString(ListaPacientes.ObtenerValor(i)));
                         }
                     }
-                    for (int i = 0; i < Cola.ObtenerCola().contador; i++)
-                    {
-                        OrdenarPrioridad(Cola.ObtenerCola().ObtenerValor(i).valor.Cui, Cola.ObtenerCola().ObtenerValor(i).valor.prioridad, i + 1);
-                    }
 
+                    return View("Registro", ListaPacientes);
                 }
-                bool enfermedad;
-
-                //Agregado Datos del paciente a un paciente nuevo recien creado
-                paciente PacienteAgregar = new paciente();
-                PacienteAgregar.Nombre = Nombre;
-                PacienteAgregar.Apellido = Apellido;
-                PacienteAgregar.DPI_CUI = DPI_CUI;
-                PacienteAgregar.Departamento = DefinirDept(Departamento);
-                PacienteAgregar.Municipio_residencia = Municipio_residencia;
-                PacienteAgregar.Edad = Edad;
-                PacienteAgregar.Vacunado = Vacunado;
-                PacienteAgregar.Grupo = Grupo;
-                if (model.Enfermedad == "Sí")
-                {
-                    enfermedad = true;
-                    PacienteAgregar.Enfermedad = "Aplica";
-                }
-                else
-                {
-                    enfermedad = false;
-                    PacienteAgregar.Enfermedad = "No Aplica";
-                }
-
-                PacienteAgregar.Prioridad = DefinirPrioridad(Convert.ToInt32(Grupo), Edad, enfermedad);
-                TablasHashPacientes.Insertar(PacienteAgregar, PacienteAgregar.DPI_CUI.ToString());
-
-                // Ordenar según prioridad
-                ColaPrioridad ColaHeap = new ColaPrioridad();
-                ColaHeap.InsertarConArbol(Heap);
-                Prioridad paciete = new Prioridad();
-                paciete.Cui = PacienteAgregar.DPI_CUI.ToString();
-                paciete.prioridad = PacienteAgregar.Prioridad;
-                ColaHeap.Insertar(paciete);
-                OrdenarPrioridad(PacienteAgregar.DPI_CUI.ToString(), PacienteAgregar.Prioridad, ColaHeap.Buscar(paciete) + 1);
-
-                // Se adjunta paciente a la lista doble
-                LlenarLista(ListaPacientes, Heap, TablasHashPacientes);
-
-                // Crear cita al paciente y guardar dentro del csv cita
-                CrearCita(ListaPacientes, HostEnvi);
-
-                //Volver a escrivir el CSV para mantener guardad y actualizada la informacion
-                using (StreamWriter sw = new StreamWriter(FileName))
-                {
-                    sw.WriteLine("Nombre,Apellido,DPI_CUI,Departamento,Municipio_residencia,Edad,Vacunado,Prioridad,Grupo,Enfermedad");
-                    for (int i = 0; i < ListaPacientes.contador; i++)
-                    {
-                        sw.WriteLine(JuntarString(ListaPacientes.ObtenerValor(i)));
-                    }
-                }
-
-                return View("Registro",ListaPacientes);
             }
             ViewBag.Mensaje = "Datos inválidos, intente nuevamente";
             return View();

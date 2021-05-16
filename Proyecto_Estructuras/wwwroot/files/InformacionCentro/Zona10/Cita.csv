@@ -1,12 +1,12 @@
 Nombre,Apellido,DPI_CUI,Edad,Prioridad,Fecha,Hora,MarcaVacuna,Dosis
 Marisela,Monserratt,1094833782874,45,2,16/5/2021,03:28 a. m.,Rusa225,2
 Josefina,Montaño,1439022286795,90,2,16/5/2021,03:22 a. m.,USA Corp,2
-Andrea ,Najara,3541758433915,21,1,17/05/2021,07:00 a. m.,No Disponible,0
-mariana,lopez,3048506759106,26,1,17/05/2021,07:00 a. m.,No Disponible,0
-Sara,Estrada,1702498972415,21,1,17/05/2021,07:00 a. m.,No Disponible,0
-Mireya,Castillo,6463352394755,70,2,17/05/2021,07:15 a. m.,No Disponible,0
-Andrea,Blanco,4371820622589,21,3,17/05/2021,07:15 a. m.,No Disponible,0
-Andrea,Camara,4648619433864,30,3,17/05/2021,07:15 a. m.,No Disponible,0
-Mauricio Alejandro,lopez,3994745280113,30,3,17/05/2021,07:30 a. m.,No Disponible,0
-Marian Alejandra,lopez,8728737298398,30,4,17/05/2021,07:30 a. m.,No Disponible,0
-Andres,Galvez,3016382930101,21,4,17/05/2021,07:30 a. m.,No Disponible,0
+Andrea ,Najara,3541758433915,21,1,17/05/2021,07:45 a. m.,No Disponible,0
+mariana,lopez,3048506759106,26,1,17/05/2021,07:45 a. m.,No Disponible,0
+Sara,Estrada,1702498972415,21,1,17/05/2021,08:00 a. m.,No Disponible,0
+Mireya,Castillo,6463352394755,70,2,17/05/2021,08:00 a. m.,No Disponible,0
+Andrea,Blanco,4371820622589,21,3,17/05/2021,08:00 a. m.,No Disponible,0
+Andrea,Camara,4648619433864,30,3,17/05/2021,09:00 a. m.,No Disponible,0
+Mauricio Alejandro,lopez,3994745280113,30,3,17/05/2021,09:00 a. m.,No Disponible,0
+Marian Alejandra,lopez,8728737298398,30,4,17/05/2021,09:00 a. m.,No Disponible,0
+Andres,Galvez,3016382930101,21,4,17/05/2021,09:15 a. m.,No Disponible,0

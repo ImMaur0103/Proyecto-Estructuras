@@ -62,7 +62,7 @@
                 @Html.DisplayNameFor(model => model.Apellido)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Municipio_residencia)
+                @Html.DisplayNameFor(model => model.Municipio_residencia).Replace("_"," ")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Departamento)
@@ -87,35 +87,35 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DPI_CUI)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Departamento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Edad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Prioridad)
+                </td>
+                @if (ViewBag.Completo == "true")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.DPI_CUI)
+                        @Html.DisplayFor(modelItem => item.Vacunado)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nombre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Apellido)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Municipio_residencia)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Departamento)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Edad)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Prioridad)
-                    </td>
-                    @if (ViewBag.Completo == "true")
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Vacunado)
-                        </td>
-                    }
-                </tr>
+                }
+            </tr>
             }
         </tbody>
     }
