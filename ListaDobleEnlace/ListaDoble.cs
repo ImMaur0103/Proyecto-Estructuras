@@ -110,7 +110,7 @@ namespace ListaDobleEnlace
             contador++;
             return;
         }
-
+        
         public Nodo<T> ExtraerEnPosicion(int posicion)
         {
             Nodo<T> temporal = inicio;

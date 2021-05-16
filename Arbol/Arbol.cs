@@ -105,25 +105,49 @@ namespace Arbol
         {
             Nodo<T> Retornar = new Nodo<T>();
             int buscando = Indice;
-            while (buscando > Padre.izquierda.indice && buscando > Padre.derecha.indice)
+            if (Padre.izquierda != null && Padre.derecha != null)
             {
-                buscando /= 2;
-            }
-            if(Indice != buscando)
-            {
-                if (Padre.izquierda.indice == buscando)
-                    Retornar = Buscando(Indice, Padre.izquierda);
+                while (buscando > Padre.izquierda.indice && buscando > Padre.derecha.indice)
+                {
+                    buscando /= 2;
+                }
+                if (Indice != buscando)
+                {
+                    if (Padre.izquierda.indice == buscando)
+                        Retornar = Buscando(Indice, Padre.izquierda);
+                    else
+                        Retornar = Buscando(Indice, Padre.derecha);
+                }
                 else
-                    Retornar = Buscando(Indice, Padre.derecha);
+                {
+                    if (Indice == Padre.indice)
+                        Retornar = Padre;
+                    else if (Indice == Padre.izquierda.indice)
+                        Retornar = Padre.izquierda;
+                    else
+                        Retornar = Padre.derecha;
+                }
             }
             else
             {
                 if (Indice == Padre.indice)
+                {
                     Retornar = Padre;
-                else if (Indice == Padre.izquierda.indice)
-                    Retornar = Padre.izquierda;
+                }
                 else
-                    Retornar = Padre.derecha;
+                {
+                    if(Padre.izquierda != null)
+                    {
+                        if (Padre.izquierda.indice == Indice)
+                            Retornar = Padre.izquierda;
+                        else
+                            Retornar = Buscando(Indice, Padre.izquierda);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
             }
             return Retornar;
         }
@@ -234,8 +258,19 @@ namespace Arbol
             {
                 if (Padre.izquierda != null)
                 {
-                    Padre.derecha = Nuevo;
-                    return Padre;
+                    if(Nuevo.indice == Padre.indice * 2)
+                    {
+                        Nodo<T> aux = new Nodo<T>();
+                        aux.indice = Padre.indice * 2 + 1;
+                        aux.valor = Padre.izquierda.valor;
+                        Padre.izquierda = Nuevo;
+                        return InsertarHeap(Padre, aux);
+                    }
+                    else
+                    {
+                        Padre.derecha = Nuevo;
+                        return Padre;
+                    }
                 }
                 else
                 {

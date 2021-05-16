@@ -1,7 +1,7 @@
-﻿
-@{
-    ViewData["Title"] = "Configuracion";
-}
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<Proyecto_Estructuras.Models.paciente>
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container">
@@ -43,18 +43,62 @@
         </div>
     </div>
 </nav>
+<table class="table" cellpadding="0" cellspacing="0">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DPI_CUI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Municipio_residencia).Replace("_"," ")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Departamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Edad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prioridad)
+            </th>
+        </tr>
+    </thead>
+    @if (Model != null)
+    {
 
-<form method="post" action="Configuracion" class="form-control-file">
-    <div class="form-floating mb-3">
-        <label for="floatingInput">Cantidad de pacientes por cita:</label>
-        <input type="text" class="form-control" name="Cantidad" placeholder="Cantidad Pacientes">
-    </div>
-    <div class="form-floating">
-        <label for="floatingInput">Duración de la cita en minutos:</label>
-        <input type="text" class="form-control" name="Duracion" placeholder="Duracion">
-    </div>
-    <br/>
-    <div>
-        <center><button type="submit" class="Boton">Aceptar</button></center>
-    </div>
-</form>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DPI_CUI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Apellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Municipio_residencia)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Departamento)
+                    </td>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Edad)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.Prioridad)
+                    </th>
+                </tr>
+            }
+        </tbody>
+    }
+</table>

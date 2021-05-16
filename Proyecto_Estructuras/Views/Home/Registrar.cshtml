@@ -16,6 +16,9 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registro">Registro</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegistroVacunado">Vacunados</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registrar">Registrar</a>
                 </li>
                 <li class="nav-item">
@@ -173,13 +176,6 @@
     <label>Departamento:</label>
     @Html.DropDownList("Departamento", listado2)
     <p></p>
-
-    <!--
-    <div class="form-floating mb-3">
-        <label for="floatingInput">Departamento</label>
-        <input type="text" class="form-control" name="Departamento" placeholder="Departamento">
-    </div>
-    -->
     <div class="form-floating">
         <label for="floatingInput">Municipio donde usted reside:</label>
         <input type="text" class="form-control" name="Municipio_residencia" placeholder="Municipio de residencia">
@@ -283,16 +279,6 @@
     <div class="form-group">
         @Html.RadioButtonFor(model => model.Enfermedad, "Sí", new { @checked = "true" }) Sí
         @Html.RadioButtonFor(model => model.Enfermedad, "No") No
-    </div>
-    <!--
-    <div class="form-floating">
-        <label for="floatingInput">Prioridad</label>
-        <input type="tel" class="form-control" name="Prioridad" placeholder="Prioridad">
-    </div>
-    -->
-    <div class="form-floating">
-        <label for="floatingInput">Vacunado</label>
-        <input class="Checkbox" data-val="true" data-val-required="The Vacunado field is required." id="Vacunado" name="Vacunado" type="checkbox" value="true">
     </div>
     <h1 class="text-primary"> @ViewBag.Mensaje </h1>
     <div>

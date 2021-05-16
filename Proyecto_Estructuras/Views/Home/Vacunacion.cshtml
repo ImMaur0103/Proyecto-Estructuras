@@ -17,6 +17,9 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registro">Registro</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegistroVacunado">Vacunados</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registrar">Registrar</a>
                 </li>
                 <li class="nav-item">
@@ -98,7 +101,7 @@
                 @Html.DisplayNameFor(model => model.Hora)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MarcaVacuna)
+                @Html.DisplayNameFor(model => model.MarcaVacuna).Replace("aV", "a V")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Dosis)
